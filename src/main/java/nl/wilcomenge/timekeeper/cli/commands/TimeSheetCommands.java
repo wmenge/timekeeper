@@ -27,11 +27,12 @@ public class TimeSheetCommands {
     private TimeSheetEntryRepository timeSheetEntryRepository;
 
     @ShellMethod("Add a timesheet entry.")
-    public String entryAdd(@NonNull double hours) {
+    public String entryAdd(@NonNull Double hours, @ShellOption(defaultValue = "") String remark) {
         TimeSheetEntry entry = new TimeSheetEntry();
         entry.setProject(state.getSelectedProject());
         entry.setDate(state.getDate());
         entry.setMinutes((int)Math.round(hours * 60));
+        entry.setRemark(remark);
 
         timeSheetEntryRepository.save(entry);
         return entry.getId().toString();
