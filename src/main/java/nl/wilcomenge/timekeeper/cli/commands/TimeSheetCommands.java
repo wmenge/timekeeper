@@ -30,7 +30,7 @@ public class TimeSheetCommands {
     public String entryAdd(@NonNull double hours) {
         TimeSheetEntry entry = new TimeSheetEntry();
         entry.setProject(state.getSelectedProject());
-        entry.setTimestamp(new Date());
+        entry.setDate(state.getDate());
         entry.setMinutes((int)Math.round(hours * 60));
 
         timeSheetEntryRepository.save(entry);

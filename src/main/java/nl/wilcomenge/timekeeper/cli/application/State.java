@@ -5,6 +5,8 @@ import nl.wilcomenge.timekeeper.cli.model.Customer;
 import nl.wilcomenge.timekeeper.cli.model.Project;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 @Data
 public class State {
@@ -13,6 +15,8 @@ public class State {
     Customer selectedCustomer;
 
     Project selectedProject;
+
+    LocalDate date = LocalDate.now();
 
     public void setSelectedCustomer(Customer selectedCustomer) {
         this.selectedCustomer = selectedCustomer;
