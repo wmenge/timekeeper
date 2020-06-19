@@ -41,7 +41,7 @@ public class CustomerCommands {
     }
 
     @ShellMethod("Select a customer")
-    public String selectCustomer(@NonNull Long id) {
+    public String customerSelect(@NonNull Long id) {
         state.setSelectedCustomer(customerRepository.findById(id).get());
         return String.format("Selected customer %d", state.getSelectedCustomer().getId());
     }
