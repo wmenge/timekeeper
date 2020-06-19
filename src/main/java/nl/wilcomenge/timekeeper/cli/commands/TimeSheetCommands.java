@@ -38,6 +38,25 @@ public class TimeSheetCommands {
         return entry.getId().toString();
     }
 
+    @ShellMethod("Change a timesheet entry.")
+    public String entryChange(@NonNull Long id, @NonNull Double hours, @ShellOption(defaultValue = "") String remark) {
+        TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
+        entry.setMinutes((int)Math.round(hours * 60));
+        if (remark != null && remark.length() > 0) {
+            entry.setRemark(remark);
+        }
+
+        timeSheetEntryRepository.save(entry);
+        return entry.getId().toString();
+    }
+
+    @ShellMethod("Rempve a timesheet entry.")
+    public String entryRemove(@NonNull Long id) {
+        TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
+        timeSheetEntryRepository.delete(entry);
+        return "entry removed";
+    }
+
     public Availability entryAddAvailability() {
         return state.getSelectedProject() != null
                 ? Availability.available()
