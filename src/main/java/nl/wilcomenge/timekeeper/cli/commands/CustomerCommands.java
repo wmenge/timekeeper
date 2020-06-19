@@ -3,12 +3,13 @@ package nl.wilcomenge.timekeeper.cli.commands;
 import nl.wilcomenge.timekeeper.cli.application.State;
 import nl.wilcomenge.timekeeper.cli.model.Customer;
 import nl.wilcomenge.timekeeper.cli.model.CustomerRepository;
+import nl.wilcomenge.timekeeper.cli.model.Project;
+import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.table.BeanListTableModel;
 import org.springframework.shell.table.BorderStyle;
-import org.springframework.shell.table.TableBuilder;
 import org.springframework.shell.table.TableModel;
 
 import javax.annotation.Resource;
@@ -48,18 +49,8 @@ public class CustomerCommands {
 
     @ShellMethod("List customers.")
     public String customerList() {
-
         List<Customer> customerList = customerRepository.findAll();
-
-        LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
-        headers.put("id", "Id");
-        headers.put("name", "Name");
-
-        TableModel model = new BeanListTableModel<>(customerList, headers);
-        TableBuilder tableBuilder = new TableBuilder(model);
-
-        tableBuilder.addFullBorder(BorderStyle.fancy_light);
-        return tableBuilder.build().render(80);
+        return new TableBuilder<Customer>().build(customerList, Customer.class).render(80);
     }
 
 }

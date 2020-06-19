@@ -3,14 +3,13 @@ package nl.wilcomenge.timekeeper.cli.commands;
 import nl.wilcomenge.timekeeper.cli.application.State;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
+import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.table.BeanListTableModel;
-import org.springframework.shell.table.BorderStyle;
-import org.springframework.shell.table.TableBuilder;
-import org.springframework.shell.table.TableModel;
+import org.springframework.shell.standard.ShellOption;
+import org.springframework.shell.table.*;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -65,22 +64,27 @@ public class TimeSheetCommands {
 
     @ShellMethod("List entries.")
     public String entryList() {
+        List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
+        return new TableBuilder<TimeSheetEntry>().build(entries, TimeSheetEntry.class).render(80);
+    }
 
-        List<TimeSheetEntry> customerList = timeSheetEntryRepository.findAll();
+    /*private Table getTable(List<TimeSheetEntry> entries) {
+        TableModel model = new BeanListTableModel<>(entries, getHeaders());
+        TableBuilder tableBuilder = new TableBuilder(model);
+        tableBuilder.addFullBorder(BorderStyle.fancy_light);
+        return tableBuilder.build();
+    }
 
+    private LinkedHashMap<String, Object> getHeaders() {
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
         headers.put("id", "Id");
-        headers.put("timestamp", "Timestamp");
-        headers.put("project.customer.name", "Project");
+        headers.put("date", "Date");
+        headers.put("project.customer.name", "Customer");
         headers.put("project.name", "Project");
         headers.put("minutes", "Minutes");
-
-        TableModel model = new BeanListTableModel<>(customerList, headers);
-        TableBuilder tableBuilder = new TableBuilder(model);
-
-        tableBuilder.addFullBorder(BorderStyle.fancy_light);
-        return tableBuilder.build().render(80);
-    }
+        headers.put("remark", "Remark");
+        return headers;
+    }*/
 
 
 }
