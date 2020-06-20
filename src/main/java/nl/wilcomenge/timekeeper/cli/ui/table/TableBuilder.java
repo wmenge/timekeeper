@@ -8,9 +8,20 @@ import org.springframework.shell.table.BorderStyle;
 import org.springframework.shell.table.Table;
 import org.springframework.shell.table.TableModel;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class TableBuilder<T> {
+
+
+    public Table build(T entry, Class itemClass) {
+        List<T> list = Collections.singletonList(entry);
+        TableModel model = new BeanListTableModel<T>(list, getHeaders(itemClass));
+        org.springframework.shell.table.TableBuilder tableBuilder = new org.springframework.shell.table.TableBuilder(model);
+        tableBuilder.addFullBorder(BorderStyle.fancy_light);
+        return tableBuilder.build();
+    }
 
     public Table build(Iterable<T> list, Class itemClass) {
         TableModel model = new BeanListTableModel<T>(list, getHeaders(itemClass));
@@ -21,7 +32,6 @@ public class TableBuilder<T> {
 
     // TODO: Some cool polymorphism trick
     private LinkedHashMap<String, Object> getHeaders(Class itemClass) {
-
 
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
 

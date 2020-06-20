@@ -34,7 +34,8 @@ public class TimeSheetCommands {
         entry.setRemark(remark);
 
         timeSheetEntryRepository.save(entry);
-        return entry.getId().toString();
+        List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
+        return new TableBuilder<TimeSheetEntry>().build(entries, TimeSheetEntry.class).render(80);
     }
 
     @ShellMethod("Change a timesheet entry.")
@@ -46,14 +47,15 @@ public class TimeSheetCommands {
         }
 
         timeSheetEntryRepository.save(entry);
-        return entry.getId().toString();
+        return new TableBuilder<TimeSheetEntry>().build(entry, TimeSheetEntry.class).render(80);
     }
 
     @ShellMethod("Rempve a timesheet entry.")
     public String entryRemove(@NonNull Long id) {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
         timeSheetEntryRepository.delete(entry);
-        return "entry removed";
+        List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
+        return "entry removed\n" + new TableBuilder<TimeSheetEntry>().build(entries, TimeSheetEntry.class).render(80);
     }
 
     public Availability entryAddAvailability() {
@@ -67,24 +69,5 @@ public class TimeSheetCommands {
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
         return new TableBuilder<TimeSheetEntry>().build(entries, TimeSheetEntry.class).render(80);
     }
-
-    /*private Table getTable(List<TimeSheetEntry> entries) {
-        TableModel model = new BeanListTableModel<>(entries, getHeaders());
-        TableBuilder tableBuilder = new TableBuilder(model);
-        tableBuilder.addFullBorder(BorderStyle.fancy_light);
-        return tableBuilder.build();
-    }
-
-    private LinkedHashMap<String, Object> getHeaders() {
-        LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
-        headers.put("id", "Id");
-        headers.put("date", "Date");
-        headers.put("project.customer.name", "Customer");
-        headers.put("project.name", "Project");
-        headers.put("minutes", "Minutes");
-        headers.put("remark", "Remark");
-        return headers;
-    }*/
-
 
 }
