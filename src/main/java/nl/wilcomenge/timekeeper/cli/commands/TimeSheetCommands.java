@@ -12,6 +12,7 @@ import org.springframework.shell.standard.ShellOption;
 import org.springframework.shell.table.*;
 
 import javax.annotation.Resource;
+import java.time.Duration;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,7 +31,7 @@ public class TimeSheetCommands {
         TimeSheetEntry entry = new TimeSheetEntry();
         entry.setProject(state.getSelectedProject());
         entry.setDate(state.getDate());
-        entry.setMinutes((int)Math.round(hours * 60));
+        entry.setDuration(Duration.ofMinutes(Math.round(hours * 60)));
         entry.setRemark(remark);
 
         timeSheetEntryRepository.save(entry);
@@ -41,7 +42,10 @@ public class TimeSheetCommands {
     @ShellMethod("Change a timesheet entry.")
     public String entryChange(@NonNull Long id, @NonNull Double hours, @ShellOption(defaultValue = "") String remark) {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
-        entry.setMinutes((int)Math.round(hours * 60));
+
+        Duration dur;
+
+        entry.setDuration(Duration.ofMinutes(Math.round(hours * 60)));
         if (remark != null && remark.length() > 0) {
             entry.setRemark(remark);
         }

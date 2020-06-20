@@ -40,7 +40,7 @@ public class TableBuilder<T> {
             headers.put("date", "Date");
             headers.put("project.customer.name", "Customer");
             headers.put("project.name", "Project");
-            headers.put("minutes", "Minutes");
+            headers.put("duration", "Duration");
             headers.put("remark", "Remark");
         }
 

@@ -3,6 +3,7 @@ package nl.wilcomenge.timekeeper.cli.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
@@ -23,7 +24,7 @@ public class TimeSheetEntry {
 
     private LocalDate date;
 
-    private Integer minutes;
+    private Duration duration;
 
     private String remark;
 
