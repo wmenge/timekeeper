@@ -3,18 +3,15 @@ package nl.wilcomenge.timekeeper.cli.commands;
 import nl.wilcomenge.timekeeper.cli.application.State;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
+import nl.wilcomenge.timekeeper.cli.ui.formatter.DurationFormatter;
 import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import org.springframework.shell.table.*;
 
 import javax.annotation.Resource;
-import java.time.Duration;
-import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 @ShellComponent
@@ -27,11 +24,11 @@ public class TimeSheetCommands {
     private TimeSheetEntryRepository timeSheetEntryRepository;
 
     @ShellMethod("Add a timesheet entry.")
-    public String entryAdd(@NonNull Double hours, @ShellOption(defaultValue = "") String remark) {
+    public String entryAdd(@NonNull String duration, @ShellOption(defaultValue = "") String remark) {
         TimeSheetEntry entry = new TimeSheetEntry();
         entry.setProject(state.getSelectedProject());
         entry.setDate(state.getDate());
-        entry.setDuration(Duration.ofMinutes(Math.round(hours * 60)));
+        entry.setDuration(DurationFormatter.parse(duration));
         entry.setRemark(remark);
 
         timeSheetEntryRepository.save(entry);
@@ -40,12 +37,9 @@ public class TimeSheetCommands {
     }
 
     @ShellMethod("Change a timesheet entry.")
-    public String entryChange(@NonNull Long id, @NonNull Double hours, @ShellOption(defaultValue = "") String remark) {
+    public String entryChange(@NonNull Long id, @NonNull String duration, @ShellOption(defaultValue = "") String remark) {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
-
-        Duration dur;
-
-        entry.setDuration(Duration.ofMinutes(Math.round(hours * 60)));
+        entry.setDuration(DurationFormatter.parse(duration));
         if (remark != null && remark.length() > 0) {
             entry.setRemark(remark);
         }

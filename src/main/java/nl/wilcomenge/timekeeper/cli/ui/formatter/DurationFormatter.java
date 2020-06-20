@@ -14,6 +14,28 @@ public class DurationFormatter {
     }
 
     public static Duration parse(String string) {
-        return Duration.ofHours(1);
+        return Duration.parse(normalize(string));
     }
+
+    // https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html#parse-java.lang.CharSequence-
+    private static String normalize(String string) {
+        if (string == null || string.length() == 0 || "0".equals(string)) return "0m";
+
+        // If no unit has been given, assume one
+        if (isInteger(string)) {
+            string += Integer.parseInt(string) < 10 ? "h" : "m";
+        }
+
+        return "PT" + string.replace(" ", "").toUpperCase();
+    }
+
+    private static boolean isInteger(String string) {
+        try {
+            Integer.parseInt(string);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
 }
