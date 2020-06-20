@@ -19,22 +19,23 @@ public class CustomPromptProvider implements PromptProvider {
     @Override
     public AttributedString getPrompt() {
 
-        List<String> components = new ArrayList<>();
+        List<AttributedString> components = new ArrayList<>();
 
         if (state.getDate() != null) {
-            components.add(state.getDate().toString());
+            components.add(new AttributedString(state.getDate().toString(), AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)));
         }
 
         if (state.getSelectedCustomer() != null) {
-            components.add(state.getSelectedCustomer().getName());
+            components.add(new AttributedString(state.getSelectedCustomer().getName(), AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)));
         }
 
         if (state.getSelectedProject() != null) {
-            components.add(state.getSelectedProject().getName());
+            components.add(new AttributedString(state.getSelectedProject().getName(), AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)));
         }
 
-        return new AttributedString(String.join(">", components) + ":>");
-    }
+        AttributedString separator = new AttributedString(" -> ", AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN));
 
+        return AttributedString.join(new AttributedString(""), AttributedString.join(separator, components), new AttributedString(" $ "));
+    }
 
 }
