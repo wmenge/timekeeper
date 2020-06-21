@@ -3,18 +3,13 @@ package nl.wilcomenge.timekeeper.cli.commands;
 import nl.wilcomenge.timekeeper.cli.application.State;
 import nl.wilcomenge.timekeeper.cli.model.Project;
 import nl.wilcomenge.timekeeper.cli.model.ProjectRepository;
-import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.table.BeanListTableModel;
-import org.springframework.shell.table.BorderStyle;
-import org.springframework.shell.table.TableModel;
 
 import javax.annotation.Resource;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 @ShellComponent
@@ -48,8 +43,10 @@ public class ProjectCommands {
     }
 
     @ShellMethod("List projects.")
-    public String projectList() {
-        List<Project> projectList = projectRepository.findAll();
+    public String projectList(boolean showAll) {
+        List<Project> projectList = (showAll || state.getSelectedCustomer() == null) ?
+            projectRepository.findAll() : projectRepository.findByCustomer(state.getSelectedCustomer());
+
         return new TableBuilder<Project>().build(projectList, Project.class).render(80);
     }
 
