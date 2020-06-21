@@ -5,6 +5,8 @@ import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
 import nl.wilcomenge.timekeeper.cli.ui.formatter.DurationFormatter;
 import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
+import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
+import org.jline.utils.AttributedString;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
@@ -63,9 +65,10 @@ public class TimeSheetCommands {
     }
 
     @ShellMethod("List entries.")
-    public String entryList() {
-        List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
-        return new TableBuilder<TimeSheetEntry>().build(entries, TimeSheetEntry.class).render(80);
+    public AttributedString entryList(boolean showAll) {
+        List<TimeSheetEntry> entries = showAll ? timeSheetEntryRepository.findAll() : timeSheetEntryRepository.findByDate(state.getDate());
+        String message = showAll ? "Showing all entries" : String.format("Showing entries of %s", state.getDate());
+        return (ResultView.build(ResultView.MessageType.INFO, message, entries)).render();
     }
 
 }
