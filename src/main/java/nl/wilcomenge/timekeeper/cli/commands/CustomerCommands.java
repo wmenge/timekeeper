@@ -3,17 +3,14 @@ package nl.wilcomenge.timekeeper.cli.commands;
 import nl.wilcomenge.timekeeper.cli.application.State;
 import nl.wilcomenge.timekeeper.cli.model.Customer;
 import nl.wilcomenge.timekeeper.cli.model.CustomerRepository;
-import nl.wilcomenge.timekeeper.cli.model.Project;
-import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
+import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
+import nl.wilcomenge.timekeeper.cli.ui.view.ResultView.MessageType;
+import org.jline.utils.AttributedString;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.table.BeanListTableModel;
-import org.springframework.shell.table.BorderStyle;
-import org.springframework.shell.table.TableModel;
 
 import javax.annotation.Resource;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 @ShellComponent
@@ -26,31 +23,31 @@ public class CustomerCommands {
     private State state;
 
     @ShellMethod("Add a customer.")
-    public String customerAdd(@NonNull String name) {
+    public AttributedString customerAdd(@NonNull String name) {
         Customer customer = new Customer();
         customer.setName(name);
         customerRepository.save(customer);
-        return customer.getId().toString();
+        return ResultView.build(MessageType.INFO, "Created customer", customer).render(Customer.class);
     }
 
     @ShellMethod("Change a customers name.")
-    public String customerChangeName(@NonNull Long id, @NonNull String name) {
+    public AttributedString customerChangeName(@NonNull Long id, @NonNull String name) {
         Customer customer = customerRepository.findById(id).get();
         customer.setName(name);
         customerRepository.save(customer);
-        return customer.getId().toString();
+        return ResultView.build(MessageType.INFO, "Changed customer name", customer).render(Customer.class);
     }
 
     @ShellMethod("Select a customer")
-    public String customerSelect(@NonNull Long id) {
+    public AttributedString customerSelect(@NonNull Long id) {
         state.setSelectedCustomer(customerRepository.findById(id).get());
-        return String.format("Selected customer %d", state.getSelectedCustomer().getId());
+        return ResultView.build(MessageType.INFO, "Selected customer:", state.getSelectedCustomer()).render(Customer.class);
     }
 
     @ShellMethod("List customers.")
-    public String customerList() {
+    public AttributedString customerList() {
         List<Customer> customerList = customerRepository.findAll();
-        return new TableBuilder<Customer>().build(customerList, Customer.class).render(80);
+        return ResultView.build(MessageType.INFO, "Showing customers:", customerList).render(Customer.class);
     }
 
 }

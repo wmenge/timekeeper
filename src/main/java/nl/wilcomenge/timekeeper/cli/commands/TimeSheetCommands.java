@@ -1,11 +1,12 @@
 package nl.wilcomenge.timekeeper.cli.commands;
 
 import nl.wilcomenge.timekeeper.cli.application.State;
+import nl.wilcomenge.timekeeper.cli.model.Customer;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
 import nl.wilcomenge.timekeeper.cli.ui.formatter.DurationFormatter;
-import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
+import nl.wilcomenge.timekeeper.cli.ui.view.ResultView.MessageType;
 import org.jline.utils.AttributedString;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.Availability;
@@ -26,7 +27,7 @@ public class TimeSheetCommands {
     private TimeSheetEntryRepository timeSheetEntryRepository;
 
     @ShellMethod("Add a timesheet entry.")
-    public String entryAdd(@NonNull String duration, @ShellOption(defaultValue = "") String remark) {
+    public AttributedString entryAdd(@NonNull String duration, @ShellOption(defaultValue = "") String remark) {
         TimeSheetEntry entry = new TimeSheetEntry();
         entry.setProject(state.getSelectedProject());
         entry.setDate(state.getDate());
@@ -35,11 +36,11 @@ public class TimeSheetCommands {
 
         timeSheetEntryRepository.save(entry);
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
-        return new TableBuilder<TimeSheetEntry>().build(entries, TimeSheetEntry.class).render(80);
+        return ResultView.build(MessageType.INFO, "Created entry", entries).render(Customer.class);
     }
 
     @ShellMethod("Change a timesheet entry.")
-    public String entryChange(@NonNull Long id, @NonNull String duration, @ShellOption(defaultValue = "") String remark) {
+    public AttributedString entryChange(@NonNull Long id, @NonNull String duration, @ShellOption(defaultValue = "") String remark) {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
         entry.setDuration(DurationFormatter.parse(duration));
         if (remark != null && remark.length() > 0) {
@@ -47,15 +48,15 @@ public class TimeSheetCommands {
         }
 
         timeSheetEntryRepository.save(entry);
-        return new TableBuilder<TimeSheetEntry>().build(entry, TimeSheetEntry.class).render(80);
+        return ResultView.build(MessageType.INFO, "Changed entry", entry).render(Customer.class);
     }
 
-    @ShellMethod("Rempve a timesheet entry.")
-    public String entryRemove(@NonNull Long id) {
+    @ShellMethod("Remove a timesheet entry.")
+    public AttributedString entryRemove(@NonNull Long id) {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
         timeSheetEntryRepository.delete(entry);
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
-        return "entry removed\n" + new TableBuilder<TimeSheetEntry>().build(entries, TimeSheetEntry.class).render(80);
+        return ResultView.build(MessageType.INFO, "Removed entry", entries).render(Customer.class);
     }
 
     public Availability entryAddAvailability() {
@@ -68,7 +69,7 @@ public class TimeSheetCommands {
     public AttributedString entryList(boolean showAll) {
         List<TimeSheetEntry> entries = showAll ? timeSheetEntryRepository.findAll() : timeSheetEntryRepository.findByDate(state.getDate());
         String message = showAll ? "Showing all entries" : String.format("Showing entries of %s", state.getDate());
-        return (ResultView.build(ResultView.MessageType.INFO, message, entries)).render();
+        return ResultView.build(MessageType.INFO, message, entries).render(Customer.class);
     }
 
 }
