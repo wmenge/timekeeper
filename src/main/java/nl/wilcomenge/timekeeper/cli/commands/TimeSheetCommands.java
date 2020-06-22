@@ -1,7 +1,6 @@
 package nl.wilcomenge.timekeeper.cli.commands;
 
 import nl.wilcomenge.timekeeper.cli.application.State;
-import nl.wilcomenge.timekeeper.cli.model.Customer;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
 import nl.wilcomenge.timekeeper.cli.ui.formatter.DurationFormatter;
@@ -36,7 +35,7 @@ public class TimeSheetCommands {
 
         timeSheetEntryRepository.save(entry);
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
-        return ResultView.build(MessageType.INFO, "Created entry", entries).render(Customer.class);
+        return ResultView.build(MessageType.INFO, "Created entry", entries).render(TimeSheetEntry.class);
     }
 
     @ShellMethod("Change a timesheet entry.")
@@ -48,7 +47,7 @@ public class TimeSheetCommands {
         }
 
         timeSheetEntryRepository.save(entry);
-        return ResultView.build(MessageType.INFO, "Changed entry", entry).render(Customer.class);
+        return ResultView.build(MessageType.INFO, "Changed entry", entry).render(TimeSheetEntry.class);
     }
 
     @ShellMethod("Remove a timesheet entry.")
@@ -56,7 +55,7 @@ public class TimeSheetCommands {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
         timeSheetEntryRepository.delete(entry);
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
-        return ResultView.build(MessageType.INFO, "Removed entry", entries).render(Customer.class);
+        return ResultView.build(MessageType.INFO, "Removed entry", entries).render(TimeSheetEntry.class);
     }
 
     public Availability entryAddAvailability() {
@@ -69,7 +68,7 @@ public class TimeSheetCommands {
     public AttributedString entryList(boolean showAll) {
         List<TimeSheetEntry> entries = showAll ? timeSheetEntryRepository.findAll() : timeSheetEntryRepository.findByDate(state.getDate());
         String message = showAll ? "Showing all entries" : String.format("Showing entries of %s", state.getDate());
-        return ResultView.build(MessageType.INFO, message, entries).render(Customer.class);
+        return ResultView.build(MessageType.INFO, message, entries).render(TimeSheetEntry.class);
     }
 
 }
