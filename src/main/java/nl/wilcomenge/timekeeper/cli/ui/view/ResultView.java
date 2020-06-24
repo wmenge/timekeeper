@@ -77,7 +77,7 @@ public class ResultView<T> {
 
     private AttributedString renderTable(Class<T> entityClass) {
         return AttributedString.join( new AttributedString(""), Arrays.asList(
-                new AttributedString(new TableBuilder<T>().build(this.list, entityClass).render(80)),
+                new AttributedString(new TableBuilder<T>().build(this.list, entityClass).render(160)),
                 tableMessage()));
     }
 
@@ -88,6 +88,6 @@ public class ResultView<T> {
     }
 
     private AttributedString renderRecord(Class<T> entityClass) {
-        return new AttributedString(new TableBuilder<T>().build((T)this.entry, entityClass).render(80));
+        return new AttributedString(new TableBuilder<T>().build((T)this.entry, entityClass).render(160));
     }
 }
