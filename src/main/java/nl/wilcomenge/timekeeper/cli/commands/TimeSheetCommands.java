@@ -34,7 +34,7 @@ public class TimeSheetCommands {
         entry.setRemark(remark);
 
         timeSheetEntryRepository.save(entry);
-        List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
+        List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDate(state.getDate());
         return ResultView.build(MessageType.INFO, "Created entry", entries).render(TimeSheetEntry.class);
     }
 
@@ -46,15 +46,15 @@ public class TimeSheetCommands {
             entry.setRemark(remark);
         }
 
-        timeSheetEntryRepository.save(entry);
-        return ResultView.build(MessageType.INFO, "Changed entry", entry).render(TimeSheetEntry.class);
+        List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDate(state.getDate());;
+        return ResultView.build(MessageType.INFO, "Changed entry", entries).render(TimeSheetEntry.class);
     }
 
     @ShellMethod("Remove a timesheet entry.")
     public AttributedString entryRemove(@NonNull Long id) {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
         timeSheetEntryRepository.delete(entry);
-        List<TimeSheetEntry> entries = timeSheetEntryRepository.findAll();
+        List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDate(state.getDate());;
         return ResultView.build(MessageType.INFO, "Removed entry", entries).render(TimeSheetEntry.class);
     }
 
