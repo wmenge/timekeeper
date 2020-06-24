@@ -56,6 +56,19 @@ public class TableBuilder<T> {
             headers.put("name", "Name");
         }
 
+        if (TimesheetEntryAggregrate.class.equals(itemClass)) {
+            headers.put("project.customer.name", "Customer");
+            headers.put("project.name", "Project");
+            headers.put("durations[1]", "Mon");
+            headers.put("durations[2]", "Tue");
+            headers.put("durations[3]", "Wed");
+            headers.put("durations[4]", "Thu");
+            headers.put("durations[5]", "Fri");
+            headers.put("durations[6]", "Sat");
+            headers.put("durations[7]", "Sun");
+            headers.put("total", "Total");
+        }
+
         return headers;
     }
 

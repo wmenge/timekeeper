@@ -11,4 +11,6 @@ public interface TimeSheetEntryRepository extends JpaRepository<TimeSheetEntry, 
 
     List<TimeSheetEntry> findByDate(LocalDate date);
 
+    List<TimeSheetEntry> findByDateBetween(LocalDate startDate, LocalDate endDate);
+
 }
