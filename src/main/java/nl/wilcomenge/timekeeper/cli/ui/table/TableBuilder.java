@@ -1,24 +1,24 @@
 package nl.wilcomenge.timekeeper.cli.ui.table;
 
+import nl.wilcomenge.timekeeper.cli.dto.TimesheetEntryAggregrate;
 import nl.wilcomenge.timekeeper.cli.model.Customer;
 import nl.wilcomenge.timekeeper.cli.model.Project;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
-import org.springframework.shell.table.BeanListTableModel;
-import org.springframework.shell.table.BorderStyle;
-import org.springframework.shell.table.Table;
-import org.springframework.shell.table.TableModel;
+import nl.wilcomenge.timekeeper.cli.ui.formatter.DurationFormatter;
+import org.springframework.shell.table.*;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public class TableBuilder<T> {
 
-
     public Table build(T entry, Class itemClass) {
         List<T> list = Collections.singletonList(entry);
         TableModel model = new BeanListTableModel<T>(list, getHeaders(itemClass));
         org.springframework.shell.table.TableBuilder tableBuilder = new org.springframework.shell.table.TableBuilder(model);
+        tableBuilder.on(CellMatchers.ofType(Duration.class)).addFormatter(DurationFormatter.getInstance());
         tableBuilder.addFullBorder(BorderStyle.fancy_light);
         return tableBuilder.build();
     }
@@ -26,6 +26,7 @@ public class TableBuilder<T> {
     public Table build(Iterable<T> list, Class itemClass) {
         TableModel model = new BeanListTableModel<T>(list, getHeaders(itemClass));
         org.springframework.shell.table.TableBuilder tableBuilder = new org.springframework.shell.table.TableBuilder(model);
+        tableBuilder.on(CellMatchers.ofType(Duration.class)).addFormatter(DurationFormatter.getInstance());
         tableBuilder.addFullBorder(BorderStyle.fancy_light);
         return tableBuilder.build();
     }
@@ -40,7 +41,7 @@ public class TableBuilder<T> {
             headers.put("date", "Date");
             headers.put("project.customer.name", "Customer");
             headers.put("project.name", "Project");
-            headers.put("formattedDuration", "Duration");
+            headers.put("duration", "Duration");
             headers.put("remark", "Remark");
         }
 

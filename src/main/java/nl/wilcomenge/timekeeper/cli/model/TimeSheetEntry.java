@@ -1,7 +1,6 @@
 package nl.wilcomenge.timekeeper.cli.model;
 
 import lombok.Data;
-import nl.wilcomenge.timekeeper.cli.ui.formatter.DurationFormatter;
 
 import javax.persistence.*;
 import java.time.Duration;
@@ -27,11 +26,6 @@ public class TimeSheetEntry {
     private Duration duration;
 
     private String remark;
-
-    // TODO: Move to table formatter
-    public String getFormattedDuration() {
-        return DurationFormatter.format(this.duration);
-    }
 
     @Override
     public boolean equals(Object o) {

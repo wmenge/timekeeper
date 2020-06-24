@@ -30,7 +30,7 @@ public class TimeSheetCommands {
         TimeSheetEntry entry = new TimeSheetEntry();
         entry.setProject(state.getSelectedProject());
         entry.setDate(state.getDate());
-        entry.setDuration(DurationFormatter.parse(duration));
+        entry.setDuration(DurationFormatter.getInstance().parse(duration));
         entry.setRemark(remark);
 
         timeSheetEntryRepository.save(entry);
@@ -41,7 +41,7 @@ public class TimeSheetCommands {
     @ShellMethod("Change a timesheet entry.")
     public AttributedString entryChange(@NonNull Long id, @NonNull String duration, @ShellOption(defaultValue = "") String remark) {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
-        entry.setDuration(DurationFormatter.parse(duration));
+        entry.setDuration(DurationFormatter.getInstance().parse(duration));
         if (remark != null && remark.length() > 0) {
             entry.setRemark(remark);
         }
