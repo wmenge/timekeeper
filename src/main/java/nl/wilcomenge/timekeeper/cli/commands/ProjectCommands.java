@@ -48,9 +48,8 @@ public class ProjectCommands {
     }
 
     @ShellMethod("Select a project.")
-    public AttributedString projectSelect(@NonNull Long id) {
+    public void projectSelect(@NonNull Long id) {
         state.setSelectedProject(projectRepository.findById(id).get());
-        return ResultView.build(MessageType.INFO, "Selected project", state.getSelectedProject()).render(Project.class);
     }
 
     @ShellMethod("List projects.")

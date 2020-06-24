@@ -40,9 +40,8 @@ public class CustomerCommands {
     }
 
     @ShellMethod("Select a customer")
-    public AttributedString customerSelect(@NonNull Long id) {
+    public void customerSelect(@NonNull Long id) {
         state.setSelectedCustomer(customerRepository.findById(id).get());
-        return ResultView.build(MessageType.INFO, "Selected customer:", state.getSelectedCustomer()).render(Customer.class);
     }
 
     @ShellMethod("List customers.")
