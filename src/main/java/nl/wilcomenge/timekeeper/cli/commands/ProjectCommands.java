@@ -29,6 +29,7 @@ public class ProjectCommands {
         project.setName(name);
         project.setCustomer(state.getSelectedCustomer());
         projectRepository.save(project);
+        state.setSelectedProject(project);
         return ResultView.build(MessageType.INFO, "Created project", project).render(Project.class);
     }
 

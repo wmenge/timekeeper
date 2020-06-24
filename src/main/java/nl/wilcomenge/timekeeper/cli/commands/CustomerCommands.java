@@ -27,6 +27,7 @@ public class CustomerCommands {
         Customer customer = new Customer();
         customer.setName(name);
         customerRepository.save(customer);
+        state.setSelectedCustomer(customer);
         return ResultView.build(MessageType.INFO, "Created customer", customer).render(Customer.class);
     }
 
