@@ -1,13 +1,16 @@
 package nl.wilcomenge.timekeeper.cli.service;
 
+import nl.wilcomenge.timekeeper.cli.dto.TimesheetEntryAggregateTotal;
 import nl.wilcomenge.timekeeper.cli.dto.TimesheetEntryAggregrate;
 import nl.wilcomenge.timekeeper.cli.dto.Week;
 import nl.wilcomenge.timekeeper.cli.model.Project;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +43,26 @@ public class ReportingService {
             }
 
             line.setTotal(line.getTotal().plus(entry.getDuration()));
+
         });
 
-        return List.copyOf(lines.values());
+        TimesheetEntryAggregrate total = lines.values().stream()
+                .reduce(
+                        new TimesheetEntryAggregateTotal(),
+                        (subtotal, element) -> {
+                            subtotal.setTotal(subtotal.getTotal().plus(element.getTotal()));
+
+                            element.getDurations().forEach((k,v) -> {
+                                if (!subtotal.getDurations().containsKey(k)) {
+                                    subtotal.getDurations().put(k,v);
+                                } else {
+                                    subtotal.getDurations().put(k,v.plus(subtotal.getDurations().get(k)));
+                                }
+                            });
+
+                            return subtotal;
+                        });
+
+        return ListUtils.union(List.copyOf(lines.values()), Arrays.asList(total));
     }
 }
