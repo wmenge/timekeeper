@@ -7,9 +7,8 @@ import java.util.Objects;
 
 public class Week {
 
-    int week;
-
-    int year;
+    private int week;
+    private int year;
 
     public static Week getWeekFor(LocalDate date) {
         int weekNumber = date.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
@@ -37,6 +36,14 @@ public class Week {
                 .with(weekFields.dayOfWeek(), 7);
     }
 
+    public int getWeek() {
+        return week;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,5 +56,10 @@ public class Week {
     @Override
     public int hashCode() {
         return Objects.hash(week, year);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d-%s", week, year);
     }
 }
