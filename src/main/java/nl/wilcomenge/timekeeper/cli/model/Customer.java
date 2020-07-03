@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -20,6 +21,9 @@ public class Customer {
     @NonNull
     @Column(unique=true)
     private String name;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    private Collection<Project> projects;
 
     @Override
     public boolean equals(Object o) {
