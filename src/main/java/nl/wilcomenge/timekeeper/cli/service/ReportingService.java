@@ -1,8 +1,8 @@
 package nl.wilcomenge.timekeeper.cli.service;
 
-import nl.wilcomenge.timekeeper.cli.dto.TimesheetEntryAggregateTotal;
-import nl.wilcomenge.timekeeper.cli.dto.TimesheetEntryAggregrate;
-import nl.wilcomenge.timekeeper.cli.dto.Week;
+import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryAggregateTotal;
+import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryAggregrate;
+import nl.wilcomenge.timekeeper.cli.dto.reporting.Week;
 import nl.wilcomenge.timekeeper.cli.model.Project;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;

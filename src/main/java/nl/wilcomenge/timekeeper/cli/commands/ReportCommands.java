@@ -1,8 +1,8 @@
 package nl.wilcomenge.timekeeper.cli.commands;
 
 import nl.wilcomenge.timekeeper.cli.application.State;
-import nl.wilcomenge.timekeeper.cli.dto.TimesheetEntryAggregrate;
-import nl.wilcomenge.timekeeper.cli.dto.Week;
+import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryAggregrate;
+import nl.wilcomenge.timekeeper.cli.dto.reporting.Week;
 import nl.wilcomenge.timekeeper.cli.service.ReportingService;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import org.jline.utils.AttributedString;

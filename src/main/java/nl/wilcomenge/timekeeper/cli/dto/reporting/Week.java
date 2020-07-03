@@ -1,4 +1,4 @@
-package nl.wilcomenge.timekeeper.cli.dto;
+package nl.wilcomenge.timekeeper.cli.dto.reporting;
 
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;

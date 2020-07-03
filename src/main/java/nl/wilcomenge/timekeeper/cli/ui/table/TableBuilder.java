@@ -1,6 +1,6 @@
 package nl.wilcomenge.timekeeper.cli.ui.table;
 
-import nl.wilcomenge.timekeeper.cli.dto.TimesheetEntryAggregrate;
+import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryAggregrate;
 import nl.wilcomenge.timekeeper.cli.model.Customer;
 import nl.wilcomenge.timekeeper.cli.model.Project;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
