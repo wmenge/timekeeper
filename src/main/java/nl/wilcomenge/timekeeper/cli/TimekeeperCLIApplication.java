@@ -9,13 +9,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
-public class ConsoleDemoApplication implements ApplicationRunner {
+public class TimekeeperCLIApplication implements ApplicationRunner {
 
 	private static Logger LOG = LoggerFactory
-			.getLogger(ConsoleDemoApplication.class);
+			.getLogger(TimekeeperCLIApplication.class);
 
 	public static void main(String[] args) {
-		ConfigurableApplicationContext context = SpringApplication.run(ConsoleDemoApplication.class, args);
+		ConfigurableApplicationContext context = SpringApplication.run(TimekeeperCLIApplication.class, args);
 		context.close();
 	}
 
