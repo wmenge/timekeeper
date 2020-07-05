@@ -95,16 +95,16 @@ and has been selected.
 We have a selected project so we're ready to enter some times:
 
 ```
-2020-07-06 -> My test customer -> My First Project $ entry-add 1h30m "Fixed the causing the application to crash"
+$ entry-add 1h30m "Fixed the bug causing the application to crash"
 ```
 Result:
 ```
 Created entry
-╔══╤══════════╤════════════════╤════════════════╤════════╤══════════════════════════════════════════╗
-║Id│Date      │Customer        │Project         │Duration│Remark                                    ║
-╠══╪══════════╪════════════════╪════════════════╪════════╪══════════════════════════════════════════╣
-║1 │2020-07-06│My test customer│My First Project│1h 30m  │Fixed the causing the application to crash║
-╚══╧══════════╧════════════════╧════════════════╧════════╧══════════════════════════════════════════╝
+╔══╤══════════╤════════════════╤════════════════╤════════╤══════════════════════════════════════════════╗
+║Id│Date      │Customer        │Project         │Duration│Remark                                        ║
+╠══╪══════════╪════════════════╪════════════════╪════════╪══════════════════════════════════════════════╣
+║1 │2020-07-06│My test customer│My First Project│1h 30m  │Fixed the bug causing the application to crash║
+╚══╧══════════╧════════════════╧════════════════╧════════╧══════════════════════════════════════════════╝
 1 result(s)
 2020-07-06 -> My test customer -> My First Project $
 ```
@@ -113,16 +113,16 @@ entries for the given date.
 
 You can modify an entry by id:
 ```
-2020-07-06 -> My test customer -> My First Project $ entry-change 1 120m
+$ entry-change 1 120m
 ```
 
 ```
 Changed entry
-╔══╤══════════╤════════════════╤════════════════╤════════╤══════════════════════════════════════════╗
-║Id│Date      │Customer        │Project         │Duration│Remark                                    ║
-╠══╪══════════╪════════════════╪════════════════╪════════╪══════════════════════════════════════════╣
-║1 │2020-07-06│My test customer│My First Project│2h      │Fixed the causing the application to crash║
-╚══╧══════════╧════════════════╧════════════════╧════════╧══════════════════════════════════════════╝
+╔══╤══════════╤════════════════╤════════════════╤════════╤══════════════════════════════════════════════╗
+║Id│Date      │Customer        │Project         │Duration│Remark                                        ║
+╠══╪══════════╪════════════════╪════════════════╪════════╪══════════════════════════════════════════════╣
+║1 │2020-07-06│My test customer│My First Project│2h      │Fixed the bug causing the application to crash║
+╚══╧══════════╧════════════════╧════════════════╧════════╧══════════════════════════════════════════════╝
 1 result(s)
 2020-07-06 -> My test customer -> My First Project $
 ```
