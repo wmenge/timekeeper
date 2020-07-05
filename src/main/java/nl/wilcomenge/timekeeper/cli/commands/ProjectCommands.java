@@ -13,6 +13,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @ShellComponent
@@ -25,7 +26,7 @@ public class ProjectCommands {
     private State state;
 
     @ShellMethod("Add a project.")
-    public AttributedString projectAdd(@NonNull String name) {
+    public AttributedString addProject(@NonNull String name) {
         Project project = new Project();
         project.setName(name);
         project.setCustomer(state.getOptionalCustomer().get());
@@ -34,14 +35,14 @@ public class ProjectCommands {
         return ResultView.build(MessageType.INFO, "Created project", project).render(Project.class);
     }
 
-    public Availability projectAddAvailability() {
+    public Availability addProjectAvailability() {
         return state.getOptionalCustomer().isPresent()
                 ? Availability.available()
                 : Availability.unavailable("no customer selected");
     }
 
     @ShellMethod("Change a Project name.")
-    public AttributedString projectChangeName(@NonNull Long id, @NonNull String name) {
+    public AttributedString changeProject(@NonNull Long id, @NonNull String name) {
         Project project = projectRepository.findById(id).get();
         project.setName(name);
         projectRepository.save(project);
@@ -49,12 +50,13 @@ public class ProjectCommands {
     }
 
     @ShellMethod("Select a project.")
-    public void projectSelect(@NonNull Long id) {
+    public void selectProject(@NonNull Long id) {
         state.setSelectedProject(projectRepository.findById(id).get());
     }
 
     @ShellMethod("List projects.")
-    public AttributedString projectList(boolean showAll) {
+    @Transactional
+    public AttributedString listProject(boolean showAll) {
         List<Project> projectList = (showAll || state.getOptionalCustomer().isEmpty()) ?
             projectRepository.findAll(Sort.by(Sort.Direction.ASC, "customer.id")) : projectRepository.findByCustomer(state.getOptionalCustomer().get());
 

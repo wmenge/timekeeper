@@ -12,6 +12,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @ShellComponent
@@ -24,7 +25,7 @@ public class CustomerCommands {
     private State state;
 
     @ShellMethod("Add a customer.")
-    public AttributedString customerAdd(@NonNull String name) {
+    public AttributedString addCustomer(@NonNull String name) {
         Customer customer = new Customer();
         customer.setName(name);
         customerRepository.save(customer);
@@ -33,7 +34,7 @@ public class CustomerCommands {
     }
 
     @ShellMethod("Change a customers name.")
-    public AttributedString customerChangeName(@NonNull Long id, @NonNull String name) {
+    public AttributedString changeCustomer(@NonNull Long id, @NonNull String name) {
         Customer customer = customerRepository.findById(id).get();
         customer.setName(name);
         customerRepository.save(customer);
@@ -41,12 +42,12 @@ public class CustomerCommands {
     }
 
     @ShellMethod("Select a customer")
-    public void customerSelect(@NonNull Long id) {
+    public void selectCustomer(@NonNull Long id) {
         state.setSelectedCustomer(customerRepository.findById(id).get());
     }
 
     @ShellMethod("List customers.")
-    public AttributedString customerList() {
+    public AttributedString listCustomer() {
         List<Customer> customerList = customerRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
         return ResultView.build(MessageType.INFO, "Showing customers:", customerList).render(Customer.class);
     }

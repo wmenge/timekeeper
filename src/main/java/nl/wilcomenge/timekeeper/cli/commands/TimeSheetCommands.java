@@ -27,7 +27,7 @@ public class TimeSheetCommands {
     private TimeSheetEntryRepository timeSheetEntryRepository;
 
     @ShellMethod("Add a timesheet entry.")
-    public AttributedString entryAdd(@NonNull String duration, @ShellOption(defaultValue = "") String remark) {
+    public AttributedString addEntry(@NonNull String duration, @ShellOption(defaultValue = "") String remark) {
         TimeSheetEntry entry = new TimeSheetEntry();
         entry.setProject(state.getOptionalProject().get());
         entry.setDate(state.getDate());
@@ -39,14 +39,14 @@ public class TimeSheetCommands {
         return ResultView.build(MessageType.INFO, "Created entry", entries).render(TimeSheetEntry.class);
     }
 
-    public Availability entryAddAvailability() {
+    public Availability addEntryAvailability() {
         return state.getOptionalProject().isPresent()
                 ? Availability.available()
                 : Availability.unavailable("there is no project selected");
     }
 
     @ShellMethod("Change a timesheet entry.")
-    public AttributedString entryChange(@NonNull Long id, @NonNull String duration, @ShellOption(defaultValue = "") String remark) {
+    public AttributedString changeEntry(@NonNull Long id, @NonNull String duration, @ShellOption(defaultValue = "") String remark) {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
         entry.setDuration(DurationFormatter.getInstance().parse(duration));
         if (remark != null && remark.length() > 0) {
@@ -59,7 +59,7 @@ public class TimeSheetCommands {
     }
 
     @ShellMethod("Remove a timesheet entry.")
-    public AttributedString entryRemove(@NonNull Long id) {
+    public AttributedString removeEntry(@NonNull Long id) {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
         timeSheetEntryRepository.delete(entry);
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDate(state.getDate());;
@@ -67,7 +67,7 @@ public class TimeSheetCommands {
     }
 
     @ShellMethod("List entries.")
-    public AttributedString entryList(boolean showAll) {
+    public AttributedString listEntry(boolean showAll) {
         List<TimeSheetEntry> entries = showAll ?
                 timeSheetEntryRepository.findAll(Sort.by(Sort.Direction.ASC, "date").and(Sort.by(Sort.Direction.ASC, "id"))) :
                 timeSheetEntryRepository.findByDate(state.getDate());
