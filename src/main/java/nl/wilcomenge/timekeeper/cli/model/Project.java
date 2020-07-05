@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -24,6 +25,9 @@ public class Project {
     @ManyToOne
     @NotNull
     private Customer customer;
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Collection<TimeSheetEntry> entries;
 
     @NotNull
     @Size(min=1)

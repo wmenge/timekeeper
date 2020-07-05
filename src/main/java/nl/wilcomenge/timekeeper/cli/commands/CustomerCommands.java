@@ -41,6 +41,20 @@ public class CustomerCommands {
         return ResultView.build(MessageType.INFO, "Changed customer name", customer).render(Customer.class);
     }
 
+    @ShellMethod("Remove a customer.")
+    @Transactional
+    public AttributedString removeCustomer(@NonNull Long id) {
+        Customer customer = customerRepository.findById(id).get();
+
+        if (!customer.getProjects().isEmpty()) {
+            return ResultView.build(MessageType.ERROR, "Cannot remove customer, still has projects").render();
+        }
+
+        customerRepository.delete(customer);
+        List<Customer> customerList = customerRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        return ResultView.build(MessageType.INFO, "Removed customer", customerList).render(Customer.class);
+    }
+
     @ShellMethod("Select a customer")
     public void selectCustomer(@NonNull Long id) {
         state.setSelectedCustomer(customerRepository.findById(id).get());

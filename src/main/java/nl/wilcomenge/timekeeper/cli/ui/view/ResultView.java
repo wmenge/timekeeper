@@ -47,6 +47,10 @@ public class ResultView<T> {
         this.entry = entry;
     }
 
+    public AttributedString render() {
+        return renderMessage();
+    }
+
     // TODO try to remove the class parameter
     public AttributedString render(Class<T> entityClass) {
         if (list == null && entry == null) {

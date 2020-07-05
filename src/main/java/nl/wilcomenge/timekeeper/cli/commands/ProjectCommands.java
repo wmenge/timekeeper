@@ -54,6 +54,23 @@ public class ProjectCommands {
         state.setSelectedProject(projectRepository.findById(id).get());
     }
 
+    @ShellMethod("Remove a project.")
+    @Transactional
+    public AttributedString removeProject(@NonNull Long id) {
+        Project project = projectRepository.findById(id).get();
+
+        if (!project.getEntries().isEmpty()) {
+            return ResultView.build(MessageType.ERROR, "Cannot remove project, still has entries").render();
+        }
+
+        projectRepository.delete(project);
+
+        List<Project> projectList = (state.getOptionalCustomer().isEmpty()) ?
+                projectRepository.findAll(Sort.by(Sort.Direction.ASC, "customer.id")) : projectRepository.findByCustomer(state.getOptionalCustomer().get());
+
+        return ResultView.build(MessageType.INFO, "Removed project", projectList).render(Project.class);
+    }
+
     @ShellMethod("List projects.")
     @Transactional
     public AttributedString listProject(boolean showAll) {
