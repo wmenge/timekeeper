@@ -3,10 +3,16 @@ package nl.wilcomenge.timekeeper.cli.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
 @Data
+//name should be unique within a tenant
+@Table(uniqueConstraints={
+        @UniqueConstraint(columnNames = {"name", "customer_id"})
+})
 public class Project {
 
     public Project() { }
@@ -16,8 +22,11 @@ public class Project {
     private Long id;
 
     @ManyToOne
+    @NotNull
     private Customer customer;
 
+    @NotNull
+    @Size(min=1)
     private String name;
 
     private Boolean billable;

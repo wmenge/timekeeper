@@ -1,6 +1,7 @@
 package nl.wilcomenge.timekeeper.cli.model;
 
 import lombok.Data;
+import lombok.NonNull;
 
 import javax.persistence.*;
 import java.time.Duration;
@@ -19,10 +20,13 @@ public class TimeSheetEntry {
     private Long id;
 
     @ManyToOne
+    @NonNull
     private Project project;
 
+    @NonNull
     private LocalDate date;
 
+    @NonNull
     private Duration duration;
 
     private String remark;
