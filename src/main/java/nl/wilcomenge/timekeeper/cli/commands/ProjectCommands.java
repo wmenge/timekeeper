@@ -28,10 +28,16 @@ public class ProjectCommands {
     public AttributedString projectAdd(@NonNull String name) {
         Project project = new Project();
         project.setName(name);
-        project.setCustomer(state.getSelectedCustomer());
+        project.setCustomer(state.getOptionalCustomer().get());
         projectRepository.save(project);
         state.setSelectedProject(project);
         return ResultView.build(MessageType.INFO, "Created project", project).render(Project.class);
+    }
+
+    public Availability projectAddAvailability() {
+        return state.getOptionalCustomer().isPresent()
+                ? Availability.available()
+                : Availability.unavailable("no customer selected");
     }
 
     @ShellMethod("Change a Project name.")
@@ -42,12 +48,6 @@ public class ProjectCommands {
         return ResultView.build(MessageType.INFO, "Changed project name", project).render(Project.class);
     }
 
-    public Availability projectAddAvailability() {
-        return state.getSelectedCustomer() != null
-                ? Availability.available()
-                : Availability.unavailable("no customer selected");
-    }
-
     @ShellMethod("Select a project.")
     public void projectSelect(@NonNull Long id) {
         state.setSelectedProject(projectRepository.findById(id).get());
@@ -55,8 +55,8 @@ public class ProjectCommands {
 
     @ShellMethod("List projects.")
     public AttributedString projectList(boolean showAll) {
-        List<Project> projectList = (showAll || state.getSelectedCustomer() == null) ?
-            projectRepository.findAll(Sort.by(Sort.Direction.ASC, "customer.id")) : projectRepository.findByCustomer(state.getSelectedCustomer());
+        List<Project> projectList = (showAll || state.getOptionalCustomer().isEmpty()) ?
+            projectRepository.findAll(Sort.by(Sort.Direction.ASC, "customer.id")) : projectRepository.findByCustomer(state.getOptionalCustomer().get());
 
         return ResultView.build(MessageType.INFO, "Showing project:", projectList).render(Project.class);
 

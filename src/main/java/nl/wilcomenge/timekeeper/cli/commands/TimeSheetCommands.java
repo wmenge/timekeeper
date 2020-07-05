@@ -29,7 +29,7 @@ public class TimeSheetCommands {
     @ShellMethod("Add a timesheet entry.")
     public AttributedString entryAdd(@NonNull String duration, @ShellOption(defaultValue = "") String remark) {
         TimeSheetEntry entry = new TimeSheetEntry();
-        entry.setProject(state.getSelectedProject());
+        entry.setProject(state.getOptionalProject().get());
         entry.setDate(state.getDate());
         entry.setDuration(DurationFormatter.getInstance().parse(duration));
         entry.setRemark(remark);
@@ -37,6 +37,12 @@ public class TimeSheetCommands {
         timeSheetEntryRepository.save(entry);
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDate(state.getDate());
         return ResultView.build(MessageType.INFO, "Created entry", entries).render(TimeSheetEntry.class);
+    }
+
+    public Availability entryAddAvailability() {
+        return state.getOptionalProject().isPresent()
+                ? Availability.available()
+                : Availability.unavailable("there is no project selected");
     }
 
     @ShellMethod("Change a timesheet entry.")
@@ -58,12 +64,6 @@ public class TimeSheetCommands {
         timeSheetEntryRepository.delete(entry);
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDate(state.getDate());;
         return ResultView.build(MessageType.INFO, "Removed entry", entries).render(TimeSheetEntry.class);
-    }
-
-    public Availability entryAddAvailability() {
-        return state.getSelectedProject() != null
-                ? Availability.available()
-                : Availability.unavailable("there is no project selected");
     }
 
     @ShellMethod("List entries.")

@@ -25,12 +25,12 @@ public class CustomPromptProvider implements PromptProvider {
             components.add(new AttributedString(state.getDate().toString(), AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)));
         }
 
-        if (state.getSelectedCustomer() != null) {
-            components.add(new AttributedString(state.getSelectedCustomer().getName(), AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)));
+        if (state.getOptionalCustomer().isPresent()) {
+            components.add(new AttributedString(state.getOptionalCustomer().get().getName(), AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)));
         }
 
-        if (state.getSelectedProject() != null) {
-            components.add(new AttributedString(state.getSelectedProject().getName(), AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)));
+        if (state.getOptionalProject().isPresent()) {
+            components.add(new AttributedString(state.getOptionalProject().get().getName(), AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)));
         }
 
         AttributedString separator = new AttributedString(" -> ", AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN));
