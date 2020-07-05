@@ -22,7 +22,7 @@ public class Customer {
     @Column(unique=true)
     private String name;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Collection<Project> projects;
 
     @Override

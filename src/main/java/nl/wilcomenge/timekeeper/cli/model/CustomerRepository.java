@@ -7,4 +7,6 @@ import javax.transaction.Transactional;
 @Transactional
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
+    Customer findByName(String name);
+
 }
