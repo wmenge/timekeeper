@@ -7,6 +7,7 @@ import nl.wilcomenge.timekeeper.cli.ui.formatter.DurationFormatter;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView.MessageType;
 import org.jline.utils.AttributedString;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
@@ -67,7 +68,9 @@ public class TimeSheetCommands {
 
     @ShellMethod("List entries.")
     public AttributedString entryList(boolean showAll) {
-        List<TimeSheetEntry> entries = showAll ? timeSheetEntryRepository.findAll() : timeSheetEntryRepository.findByDate(state.getDate());
+        List<TimeSheetEntry> entries = showAll ?
+                timeSheetEntryRepository.findAll(Sort.by(Sort.Direction.ASC, "date").and(Sort.by(Sort.Direction.ASC, "id"))) :
+                timeSheetEntryRepository.findByDate(state.getDate());
         String message = showAll ? "Showing all entries" : String.format("Showing entries of %s", state.getDate());
         return ResultView.build(MessageType.INFO, message, entries).render(TimeSheetEntry.class);
     }

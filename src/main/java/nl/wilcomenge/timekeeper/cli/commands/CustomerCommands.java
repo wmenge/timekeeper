@@ -6,6 +6,7 @@ import nl.wilcomenge.timekeeper.cli.model.CustomerRepository;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView.MessageType;
 import org.jline.utils.AttributedString;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -46,7 +47,7 @@ public class CustomerCommands {
 
     @ShellMethod("List customers.")
     public AttributedString customerList() {
-        List<Customer> customerList = customerRepository.findAll();
+        List<Customer> customerList = customerRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
         return ResultView.build(MessageType.INFO, "Showing customers:", customerList).render(Customer.class);
     }
 

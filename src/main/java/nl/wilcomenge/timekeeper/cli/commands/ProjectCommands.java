@@ -6,6 +6,7 @@ import nl.wilcomenge.timekeeper.cli.model.ProjectRepository;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView.MessageType;
 import org.jline.utils.AttributedString;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
@@ -55,7 +56,7 @@ public class ProjectCommands {
     @ShellMethod("List projects.")
     public AttributedString projectList(boolean showAll) {
         List<Project> projectList = (showAll || state.getSelectedCustomer() == null) ?
-            projectRepository.findAll() : projectRepository.findByCustomer(state.getSelectedCustomer());
+            projectRepository.findAll(Sort.by(Sort.Direction.ASC, "customer.id")) : projectRepository.findByCustomer(state.getSelectedCustomer());
 
         return ResultView.build(MessageType.INFO, "Showing project:", projectList).render(Project.class);
 

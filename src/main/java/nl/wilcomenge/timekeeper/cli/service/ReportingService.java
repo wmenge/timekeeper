@@ -7,11 +7,12 @@ import nl.wilcomenge.timekeeper.cli.model.Project;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.map.ListOrderedMap;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +24,12 @@ public class ReportingService {
 
     public List<TimesheetEntryAggregrate> getWeekReport(Week week) {
 
-        Map<Project, TimesheetEntryAggregrate> lines = new HashMap<>();
+        Map<Project, TimesheetEntryAggregrate> lines = new ListOrderedMap<>();
 
-        List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDateBetween(week.getFirstDate(), week.getLastDate());
+        List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDateBetween(
+                week.getFirstDate(),
+                week.getLastDate(),
+                Sort.by(Sort.Direction.ASC, "project.customer.name").and(Sort.by(Sort.Direction.ASC, "project.name")));
 
         // TODO: Employ some stream voodoo
         entries.forEach(entry -> {

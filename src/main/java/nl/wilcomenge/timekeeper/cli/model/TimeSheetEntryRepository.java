@@ -1,5 +1,6 @@
 package nl.wilcomenge.timekeeper.cli.model;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.transaction.Transactional;
@@ -11,6 +12,6 @@ public interface TimeSheetEntryRepository extends JpaRepository<TimeSheetEntry, 
 
     List<TimeSheetEntry> findByDate(LocalDate date);
 
-    List<TimeSheetEntry> findByDateBetween(LocalDate startDate, LocalDate endDate);
+    List<TimeSheetEntry> findByDateBetween(LocalDate startDate, LocalDate endDate, Sort sort);
 
 }
