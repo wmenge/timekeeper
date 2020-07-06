@@ -1,5 +1,6 @@
 Timekeeper
 ==========
+![alt text](screenshot.png "Looking extra cool with cool-retro-term")
 
 A Java/Spring boot based CLI Application to keep track of time spent on 
 customers and projects.
