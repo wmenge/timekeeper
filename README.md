@@ -10,7 +10,9 @@ have created some customers and projects, you can select a customer and  a
 project. With a selected project, you can add time entries to that specific 
 project.
 
-You can view a weekly report and import/export your entries to a yaml fiel 
+You can view a weekly report and import/export your entries to a yaml file.
+
+(And it looks super cool when viewed in [cool-retro-term](https://github.com/Swordfish90/cool-retro-term))  
 
 Installation
 ------------
