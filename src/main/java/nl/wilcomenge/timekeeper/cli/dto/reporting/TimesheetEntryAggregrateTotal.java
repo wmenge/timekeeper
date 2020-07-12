@@ -1,6 +1,6 @@
 package nl.wilcomenge.timekeeper.cli.dto.reporting;
 
-public class TimesheetEntryAggregateTotal extends TimesheetEntryAggregrate {
+public class TimesheetEntryAggregrateTotal extends TimesheetEntryAggregrate {
 
     @Override
     public String getDescription1() {
