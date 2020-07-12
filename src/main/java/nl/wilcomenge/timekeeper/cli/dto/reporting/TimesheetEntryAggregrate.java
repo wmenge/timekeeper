@@ -6,6 +6,7 @@ import nl.wilcomenge.timekeeper.cli.model.Project;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Data
 public class TimesheetEntryAggregrate {
@@ -22,13 +23,28 @@ public class TimesheetEntryAggregrate {
 
     private Map<Integer, Duration> durations = new HashMap<>();
 
-    private Duration total = Duration.ZERO;
-
     public String getDescription1() {
         return this.getProject().getCustomer().getName();
     }
 
     public String getDescription2() {
         return this.getProject().getName();
+    }
+
+    public Duration getTotal() {
+        return this.durations.values().stream().reduce(Duration.ZERO, (sum, element) -> { return sum.plus(element); });
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimesheetEntryAggregrate that = (TimesheetEntryAggregrate) o;
+        return project.equals(that.project);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(project);
     }
 }

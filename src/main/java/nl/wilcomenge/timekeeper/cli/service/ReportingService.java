@@ -1,20 +1,16 @@
 package nl.wilcomenge.timekeeper.cli.service;
 
-import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryAggregateTotal;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryAggregrate;
+import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryAggregrateTotal;
+import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryPeriodTotal;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.Week;
-import nl.wilcomenge.timekeeper.cli.model.Project;
-import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.collections4.map.ListOrderedMap;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ReportingService {
@@ -24,49 +20,35 @@ public class ReportingService {
 
     public List<TimesheetEntryAggregrate> getWeekReport(Week week) {
 
-        Map<Project, TimesheetEntryAggregrate> lines = new ListOrderedMap<>();
-
-        List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDateBetween(
+        List<TimesheetEntryPeriodTotal> totalsPerProject = timeSheetEntryRepository.totalsPerProjectByWeekday(
                 week.getFirstDate(),
                 week.getLastDate(),
-                Sort.by(Sort.Direction.ASC, "project.customer.name").and(Sort.by(Sort.Direction.ASC, "project.name")));
+                Sort.by(Sort.Direction.ASC, "project.customer.name").and(Sort.by(Sort.Direction.ASC, "project.name"))
+        );
 
-        // TODO: Employ some stream voodoo
-        entries.forEach(entry -> {
+        List<TimesheetEntryAggregrate> result =  new ArrayList<>();
 
-            if (!lines.containsKey(entry.getProject())) {
-                lines.put(entry.getProject(), new TimesheetEntryAggregrate(entry.getProject()));
+        totalsPerProject.forEach(element -> {
+            TimesheetEntryAggregrate newElement = new TimesheetEntryAggregrate(element.getProject());
+            if (!result.contains(newElement)) {
+                result.add(newElement);
             }
-
-            TimesheetEntryAggregrate line = lines.get(entry.getProject());
-
-            if (!line.getDurations().containsKey(entry.getDate().getDayOfWeek().getValue())) {
-                line.getDurations().put(entry.getDate().getDayOfWeek().getValue(), entry.getDuration());
-            } else {
-                line.getDurations().put(entry.getDate().getDayOfWeek().getValue(), line.getDurations().get(entry.getDate().getDayOfWeek().getValue()).plus(entry.getDuration()));
-            }
-
-            line.setTotal(line.getTotal().plus(entry.getDuration()));
-
+            result.get(result.indexOf(newElement)).getDurations().put(element.getPeriod(), element.getTotal());
         });
 
-        TimesheetEntryAggregrate total = lines.values().stream()
-                .reduce(
-                        new TimesheetEntryAggregateTotal(),
-                        (subtotal, element) -> {
-                            subtotal.setTotal(subtotal.getTotal().plus(element.getTotal()));
+        List<TimesheetEntryPeriodTotal> totals = timeSheetEntryRepository.totalsByWeekday(
+                week.getFirstDate(),
+                week.getLastDate()
+        );
 
-                            element.getDurations().forEach((k,v) -> {
-                                if (!subtotal.getDurations().containsKey(k)) {
-                                    subtotal.getDurations().put(k,v);
-                                } else {
-                                    subtotal.getDurations().put(k,v.plus(subtotal.getDurations().get(k)));
-                                }
-                            });
+        TimesheetEntryAggregrateTotal totalElement = new TimesheetEntryAggregrateTotal();
 
-                            return subtotal;
-                        });
+        totals.forEach(element -> {
+            totalElement.getDurations().put(element.getPeriod(), element.getTotal());
+        });
 
-        return ListUtils.union(List.copyOf(lines.values()), Arrays.asList(total));
+        result.add(totalElement);
+
+        return result;
     }
 }
