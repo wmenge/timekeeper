@@ -68,7 +68,7 @@ public class TimeSheetCommands {
     }
 
     @ShellMethod("List entries.")
-    public AttributedString listEntry(boolean showAll) {
+    public AttributedString listEntries(boolean showAll) {
         List<TimeSheetEntry> entries = showAll ?
                 timeSheetEntryRepository.findAll(Sort.by(Sort.Direction.ASC, "date").and(Sort.by(Sort.Direction.ASC, "id"))) :
                 timeSheetEntryRepository.findByDate(state.getDate());

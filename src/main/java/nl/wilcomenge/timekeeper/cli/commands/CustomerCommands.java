@@ -62,7 +62,7 @@ public class CustomerCommands {
     }
 
     @ShellMethod("List customers.")
-    public AttributedString listCustomer() {
+    public AttributedString listCustomers() {
         List<Customer> customerList = customerRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
         return ResultView.build(MessageType.INFO, "Showing customers:", customerList).render(TableBuilder.getCustomerHeaders());
     }

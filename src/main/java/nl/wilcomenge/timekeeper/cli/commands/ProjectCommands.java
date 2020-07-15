@@ -74,7 +74,7 @@ public class ProjectCommands {
 
     @ShellMethod("List projects.")
     @Transactional
-    public AttributedString listProject(boolean showAll) {
+    public AttributedString listProjects(boolean showAll) {
         List<Project> projectList = (showAll || state.getOptionalCustomer().isEmpty()) ?
             projectRepository.findAll(Sort.by(Sort.Direction.ASC, "customer.id")) : projectRepository.findByCustomer(state.getOptionalCustomer().get());
 
