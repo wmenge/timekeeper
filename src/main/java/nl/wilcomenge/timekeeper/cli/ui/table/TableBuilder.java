@@ -1,9 +1,5 @@
 package nl.wilcomenge.timekeeper.cli.ui.table;
 
-import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryAggregrate;
-import nl.wilcomenge.timekeeper.cli.model.Customer;
-import nl.wilcomenge.timekeeper.cli.model.Project;
-import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.ui.formatter.DurationFormatter;
 import org.springframework.shell.table.*;
 
@@ -14,9 +10,9 @@ import java.util.List;
 
 public class TableBuilder<T> {
 
-    public Table build(T entry, Class itemClass) {
+    public Table build(T entry, LinkedHashMap<String, Object> headers) {
         List<T> list = Collections.singletonList(entry);
-        TableModel model = new BeanListTableModel<T>(list, getHeaders(itemClass));
+        TableModel model = new BeanListTableModel<T>(list, headers);
         org.springframework.shell.table.TableBuilder tableBuilder = new org.springframework.shell.table.TableBuilder(model);
         tableBuilder.on(CellMatchers.ofType(Duration.class)).addFormatter(DurationFormatter.getInstance());
         tableBuilder.addFullBorder(BorderStyle.fancy_light);
@@ -24,8 +20,8 @@ public class TableBuilder<T> {
         return tableBuilder.build();
     }
 
-    public Table build(Iterable<T> list, Class itemClass) {
-        TableModel model = new BeanListTableModel<T>(list, getHeaders(itemClass));
+    public Table build(Iterable<T> list, LinkedHashMap<String, Object> headers) {
+        TableModel model = new BeanListTableModel<T>(list, headers);
         org.springframework.shell.table.TableBuilder tableBuilder = new org.springframework.shell.table.TableBuilder(model);
         tableBuilder.on(CellMatchers.ofType(Duration.class)).addFormatter(DurationFormatter.getInstance());
         tableBuilder.addFullBorder(BorderStyle.fancy_light);
@@ -33,44 +29,77 @@ public class TableBuilder<T> {
         return tableBuilder.build();
     }
 
-    // TODO: Some cool polymorphism trick
-    private LinkedHashMap<String, Object> getHeaders(Class itemClass) {
-
+    public static LinkedHashMap<String, Object> getTimeSheetEntryHeaders() {
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
+        headers.put("id", "Id");
+        headers.put("date", "Date");
+        headers.put("project.customer.name", "Customer");
+        headers.put("project.name", "Project");
+        headers.put("duration", "Duration");
+        headers.put("remark", "Remark");
+        return headers;
+    }
 
-        if (TimeSheetEntry.class.equals(itemClass)) {
-            headers.put("id", "Id");
-            headers.put("date", "Date");
-            headers.put("project.customer.name", "Customer");
-            headers.put("project.name", "Project");
-            headers.put("duration", "Duration");
-            headers.put("remark", "Remark");
-        }
+    public static LinkedHashMap<String, Object> getCustomerHeaders() {
+        LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
+        headers.put("id", "Id");
+        headers.put("name", "Name");
+        return headers;
+    }
 
-        if (Customer.class.equals(itemClass)) {
-            headers.put("id", "Id");
-            headers.put("name", "Name");
-        }
+    public static LinkedHashMap<String, Object> getProjectHeaders() {
+        LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
+        headers.put("id", "Id");
+        headers.put("customer.name", "Customer");
+        headers.put("name", "Name");
+        return headers;
+    }
 
-        if (Project.class.equals(itemClass)) {
-            headers.put("id", "Id");
-            headers.put("customer.name", "Customer");
-            headers.put("name", "Name");
-        }
+    public static LinkedHashMap<String, Object> getWeeklyReportHeaders() {
+        LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
+        headers.put("description1", "Customer");
+        headers.put("description2", "Project");
+        headers.put("durations[1]", "Mon   ");
+        headers.put("durations[2]", "Tue   ");
+        headers.put("durations[3]", "Wed   ");
+        headers.put("durations[4]", "Thu   ");
+        headers.put("durations[5]", "Fri   ");
+        headers.put("durations[6]", "Sat   ");
+        headers.put("durations[7]", "Sun   ");
+        headers.put("total", "Total  ");
+        return headers;
+    }
 
-        if (TimesheetEntryAggregrate.class.equals(itemClass)) {
-            headers.put("description1", "Customer");
-            headers.put("description2", "Project");
-            headers.put("durations[1]", "Mon   ");
-            headers.put("durations[2]", "Tue   ");
-            headers.put("durations[3]", "Wed   ");
-            headers.put("durations[4]", "Thu   ");
-            headers.put("durations[5]", "Fri   ");
-            headers.put("durations[6]", "Sat   ");
-            headers.put("durations[7]", "Sun   ");
-            headers.put("total", "Total  ");
-        }
+    public static LinkedHashMap<String, Object> getMonthlyReportHeaders() {
+        LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
+        headers.put("description1", "Customer");
+        headers.put("description2", "Project");
+        headers.put("durations[1]", "1     ");
+        headers.put("durations[2]", "2     ");
+        headers.put("durations[3]", "3     ");
+        headers.put("durations[4]", "4     ");
+        headers.put("durations[5]", "5     ");
+        headers.put("total", "Total  ");
+        return headers;
+    }
 
+    public static LinkedHashMap<String, Object> getYearlyReportHeaders() {
+        LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
+        headers.put("description1", "Customer");
+        headers.put("description2", "Project");
+        headers.put("durations[1]", "Jan   ");
+        headers.put("durations[2]", "Feb   ");
+        headers.put("durations[3]", "Mar   ");
+        headers.put("durations[4]", "Apr   ");
+        headers.put("durations[5]", "May   ");
+        headers.put("durations[6]", "Jun   ");
+        headers.put("durations[7]", "Jul   ");
+        headers.put("durations[8]", "Aug   ");
+        headers.put("durations[9]", "Sep   ");
+        headers.put("durations[10]", "Oct   ");
+        headers.put("durations[11]", "Nov   ");
+        headers.put("durations[12]", "Dec   ");
+        headers.put("total", "Total  ");
         return headers;
     }
 

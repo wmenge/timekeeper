@@ -29,4 +29,28 @@ public interface TimeSheetEntryRepository extends JpaRepository<TimeSheetEntry, 
             "GROUP BY period")
     List<TimesheetEntryPeriodTotal> totalsByWeekday(LocalDate startDate, LocalDate endDate);
 
+    @Query("SELECT new nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryPeriodTotal(e.project, EXTRACT(ISO_WEEK FROM e.date) as period, SUM(e.duration)) " +
+            "FROM TimeSheetEntry as e " +
+            "WHERE e.date BETWEEN :startDate AND :endDate " +
+            "GROUP BY e.project, period")
+    List<TimesheetEntryPeriodTotal> totalsPerProjectByWeek(LocalDate startDate, LocalDate endDate, Sort sort);
+
+    @Query("SELECT new nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryPeriodTotal(EXTRACT(ISO_WEEK FROM e.date) as period, SUM(e.duration)) " +
+            "FROM TimeSheetEntry as e " +
+            "WHERE e.date BETWEEN :startDate AND :endDate " +
+            "GROUP BY period")
+    List<TimesheetEntryPeriodTotal> totalsByWeek(LocalDate startDate, LocalDate endDate);
+
+    @Query("SELECT new nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryPeriodTotal(e.project, EXTRACT(MONTH FROM e.date) as period, SUM(e.duration)) " +
+            "FROM TimeSheetEntry as e " +
+            "WHERE e.date BETWEEN :startDate AND :endDate " +
+            "GROUP BY e.project, period")
+    List<TimesheetEntryPeriodTotal> totalsPerProjectByMonth(LocalDate startDate, LocalDate endDate, Sort sort);
+
+    @Query("SELECT new nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryPeriodTotal(EXTRACT(MONTH FROM e.date) as period, SUM(e.duration)) " +
+            "FROM TimeSheetEntry as e " +
+            "WHERE e.date BETWEEN :startDate AND :endDate " +
+            "GROUP BY period")
+    List<TimesheetEntryPeriodTotal> totalsByMonth(LocalDate startDate, LocalDate endDate);
+
 }

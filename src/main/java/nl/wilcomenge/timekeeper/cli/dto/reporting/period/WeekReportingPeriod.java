@@ -1,25 +1,26 @@
-package nl.wilcomenge.timekeeper.cli.dto.reporting;
+package nl.wilcomenge.timekeeper.cli.dto.reporting.period;
 
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 import java.util.Objects;
 
-public class Week {
+public class WeekReportingPeriod implements ReportingPeriod {
 
     private int week;
     private int year;
 
-    public static Week getWeekFor(LocalDate date) {
+    public static WeekReportingPeriod getFor(LocalDate date) {
         int weekNumber = date.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
-        return new Week(weekNumber, date.getYear());
+        return new WeekReportingPeriod(weekNumber, date.getYear());
     }
 
-    public Week(int week, int year) {
+    public WeekReportingPeriod(int week, int year) {
         this.week = week;
         this.year = year;
     }
 
+    @Override
     public LocalDate getFirstDate() {
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         return LocalDate.now()
@@ -28,6 +29,7 @@ public class Week {
                 .with(weekFields.dayOfWeek(), 1);
     }
 
+    @Override
     public LocalDate getLastDate() {
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         return LocalDate.now()
@@ -36,19 +38,11 @@ public class Week {
                 .with(weekFields.dayOfWeek(), 7);
     }
 
-    public int getWeek() {
-        return week;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Week week1 = (Week) o;
+        WeekReportingPeriod week1 = (WeekReportingPeriod) o;
         return week == week1.week &&
                 year == week1.year;
     }
