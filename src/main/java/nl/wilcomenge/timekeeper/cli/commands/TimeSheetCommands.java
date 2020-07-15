@@ -4,6 +4,7 @@ import nl.wilcomenge.timekeeper.cli.application.State;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntry;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
 import nl.wilcomenge.timekeeper.cli.ui.formatter.DurationFormatter;
+import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView.MessageType;
 import org.jline.utils.AttributedString;
@@ -36,7 +37,7 @@ public class TimeSheetCommands {
 
         timeSheetEntryRepository.save(entry);
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDate(state.getDate());
-        return ResultView.build(MessageType.INFO, "Created entry", entries).render(TimeSheetEntry.class);
+        return ResultView.build(MessageType.INFO, "Created entry", entries).render(TableBuilder.getTimeSheetEntryHeaders());
     }
 
     public Availability addEntryAvailability() {
@@ -55,7 +56,7 @@ public class TimeSheetCommands {
 
         timeSheetEntryRepository.save(entry);
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDate(state.getDate());;
-        return ResultView.build(MessageType.INFO, "Changed entry", entries).render(TimeSheetEntry.class);
+        return ResultView.build(MessageType.INFO, "Changed entry", entries).render(TableBuilder.getTimeSheetEntryHeaders());
     }
 
     @ShellMethod("Remove a timesheet entry.")
@@ -63,7 +64,7 @@ public class TimeSheetCommands {
         TimeSheetEntry entry = timeSheetEntryRepository.findById(id).get();
         timeSheetEntryRepository.delete(entry);
         List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDate(state.getDate());;
-        return ResultView.build(MessageType.INFO, "Removed entry", entries).render(TimeSheetEntry.class);
+        return ResultView.build(MessageType.INFO, "Removed entry", entries).render(TableBuilder.getTimeSheetEntryHeaders());
     }
 
     @ShellMethod("List entries.")
@@ -72,7 +73,7 @@ public class TimeSheetCommands {
                 timeSheetEntryRepository.findAll(Sort.by(Sort.Direction.ASC, "date").and(Sort.by(Sort.Direction.ASC, "id"))) :
                 timeSheetEntryRepository.findByDate(state.getDate());
         String message = showAll ? "Showing all entries" : String.format("Showing entries of %s", state.getDate());
-        return ResultView.build(MessageType.INFO, message, entries).render(TimeSheetEntry.class);
+        return ResultView.build(MessageType.INFO, message, entries).render(TableBuilder.getTimeSheetEntryHeaders());
     }
 
 }

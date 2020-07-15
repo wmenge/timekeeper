@@ -5,6 +5,7 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ResultView<T> {
@@ -52,13 +53,13 @@ public class ResultView<T> {
     }
 
     // TODO try to remove the class parameter
-    public AttributedString render(Class<T> entityClass) {
+    public AttributedString render(LinkedHashMap<String, Object> headers) {
         if (list == null && entry == null) {
             return renderMessage();
         } else if(list != null) {
-            return AttributedString.join( new AttributedString("\n"), Arrays.asList(renderMessage(), renderTable(entityClass)));
+            return AttributedString.join( new AttributedString("\n"), Arrays.asList(renderMessage(), renderTable(headers)));
         } else {
-            return AttributedString.join( new AttributedString("\n"), Arrays.asList(renderMessage(), renderRecord(entityClass)));
+            return AttributedString.join( new AttributedString("\n"), Arrays.asList(renderMessage(), renderRecord(headers)));
         }
     }
 
@@ -79,9 +80,9 @@ public class ResultView<T> {
         }
     }
 
-    private AttributedString renderTable(Class<T> entityClass) {
+    private AttributedString renderTable(LinkedHashMap<String, Object> headers) {
         return AttributedString.join( new AttributedString(""), Arrays.asList(
-                new AttributedString(new TableBuilder<T>().build(this.list, entityClass).render(160)),
+                new AttributedString(new TableBuilder<T>().build(this.list, headers).render(160)),
                 tableMessage()));
     }
 
@@ -91,7 +92,7 @@ public class ResultView<T> {
                 new AttributedString(String.format("%d result(s)", this.list.size()), getStyle(MessageType.DEFAULT));
     }
 
-    private AttributedString renderRecord(Class<T> entityClass) {
-        return new AttributedString(new TableBuilder<T>().build((T)this.entry, entityClass).render(160));
+    private AttributedString renderRecord(LinkedHashMap<String, Object> headers) {
+        return new AttributedString(new TableBuilder<T>().build((T)this.entry, headers).render(160));
     }
 }
