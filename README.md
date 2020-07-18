@@ -54,7 +54,7 @@ Get help on a command:
 
 ### Creating and selecting customers
 ```
-2020-07-06 $ customer-add "My test customer"
+2020-07-06 $ add-customer "My test customer"
 ```
 Result:
 ```
@@ -71,7 +71,7 @@ selected.
 
 If you have more than one customer, you can select a different customer:
 ```
-2020-07-06 -> My test customer $ customer-select 2 // assumes a customer with id 2
+2020-07-06 -> My test customer $ select-customer 2 // assumes a customer with id 2
 2020-07-06 -> A different customer $
 ```
 
@@ -79,7 +79,7 @@ If you have more than one customer, you can select a different customer:
 Once you have one or more customers, you can add projects to the selected 
 customer:
 ```
-2020-07-05 -> My test customer $ project-add "My First Project"
+2020-07-05 -> My test customer $ add-project "My First Project"
 ```
 Result:
 ```
@@ -98,7 +98,7 @@ and has been selected.
 We have a selected project so we're ready to enter some times:
 
 ```
-$ entry-add 1h30m "Fixed the bug causing the application to crash"
+$ add-entry 1h30m "Fixed the bug causing the application to crash"
 ```
 Result:
 ```
@@ -116,7 +116,7 @@ entries for the given date.
 
 You can modify an entry by id:
 ```
-$ entry-change 1 120m
+$ change-entry 1 120m
 ```
 
 ```
