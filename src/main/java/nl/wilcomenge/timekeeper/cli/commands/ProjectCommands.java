@@ -12,6 +12,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellOption;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -27,10 +28,11 @@ public class ProjectCommands {
     private State state;
 
     @ShellMethod("Add a project.")
-    public AttributedString addProject(@NonNull String name) {
+    public AttributedString addProject(@NonNull String name, @ShellOption(defaultValue="false") Boolean notBillable) {
         Project project = new Project();
         project.setName(name);
         project.setCustomer(state.getOptionalCustomer().get());
+        project.setBillable(!notBillable);
         projectRepository.save(project);
         state.setSelectedProject(project);
         return ResultView.build(MessageType.INFO, "Created project", project).render(TableBuilder.getProjectHeaders());
@@ -42,10 +44,16 @@ public class ProjectCommands {
                 : Availability.unavailable("no customer selected");
     }
 
-    @ShellMethod("Change a Project name.")
-    public AttributedString changeProject(@NonNull Long id, @NonNull String name) {
+    @ShellMethod("Change a Projects properties.")
+    public AttributedString changeProject(@NonNull Long id, String name, @ShellOption(defaultValue="false") Boolean isBillable, @ShellOption(defaultValue="false") Boolean notBillable) {
+        if (isBillable && notBillable) throw new IllegalArgumentException("Do not specify both isBillable and notBillable");
+
         Project project = projectRepository.findById(id).get();
-        project.setName(name);
+        if (name != null) project.setName(name);
+
+        if (isBillable) project.setBillable(true);
+        if (notBillable) project.setBillable(false);
+
         projectRepository.save(project);
         return ResultView.build(MessageType.INFO, "Changed project name", project).render(TableBuilder.getProjectHeaders());
     }

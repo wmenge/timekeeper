@@ -52,6 +52,7 @@ public class TableBuilder<T> {
         headers.put("id", "Id");
         headers.put("customer.name", "Customer");
         headers.put("name", "Name");
+        headers.put("billable", "Billable");
         return headers;
     }
 

@@ -6,5 +6,6 @@ import lombok.Data;
 public class ProjectDTO {
 
     String name;
+    Boolean billable;
 
 }
