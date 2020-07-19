@@ -104,4 +104,14 @@ public class TableBuilder<T> {
         return headers;
     }
 
+    public static LinkedHashMap<String, Object> getUtilizationReportHeaders() {
+        LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
+        headers.put("period", "Period");
+        headers.put("billableHours", "Billable Hours");
+        headers.put("nonBillableHours", "Non-Billable Hours");
+        headers.put("workingHours", "Working Hours");
+        headers.put("utilizationPercentageString", "Utilization");
+        return headers;
+    }
+
 }

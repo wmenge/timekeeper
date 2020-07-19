@@ -2,6 +2,7 @@ package nl.wilcomenge.timekeeper.cli.commands;
 
 import nl.wilcomenge.timekeeper.cli.application.State;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryAggregrate;
+import nl.wilcomenge.timekeeper.cli.dto.reporting.UtilizationReportEntry;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.period.MonthReportingPeriod;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.period.ReportingPeriod;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.period.WeekReportingPeriod;
@@ -69,8 +70,26 @@ public class ReportCommands {
         return ResultView.build(ResultView.MessageType.INFO, String.format("Yearly Report of %s", yearPeriod), report).render(TableBuilder.getYearlyReportHeaders());
     }
 
+    @ShellMethod("Utilization weekly YTD")
+    public AttributedString reportUtilizationWeekly(@ShellOption(defaultValue = "0") int year) {
+        ReportingPeriod yearPeriod = getYear(year);
+
+        List<UtilizationReportEntry> report = reportingService.getUtilizationReportPerWeek(yearPeriod);
+        return ResultView.build(ResultView.MessageType.INFO, String.format("Weekly Utilization Report of %s", yearPeriod), report).render(TableBuilder.getUtilizationReportHeaders());
+    }
+
+    @ShellMethod("Utilization monthly YTD")
+    public AttributedString reportUtilizationMonthly(@ShellOption(defaultValue = "0") int year) {
+        ReportingPeriod yearPeriod = getYear(year);
+
+        List<UtilizationReportEntry> report = reportingService.getUtilizationReportPerMonth(yearPeriod);
+        return ResultView.build(ResultView.MessageType.INFO, String.format("Monthly Utilization Report of %s", yearPeriod), report).render(TableBuilder.getUtilizationReportHeaders());
+    }
+
     private ReportingPeriod getYear(int year) {
         if (year == 0) year = state.getDate().getYear();
         return new YearReportingPeriod(year);
     }
+
+
 }
