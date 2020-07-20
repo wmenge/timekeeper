@@ -85,11 +85,13 @@ public class ImportExportService {
     }
 
     private ExportDataDTO getExportData() {
+        Type holidayListType = new TypeToken<List<HolidayDTO>>() {}.getType();
         Type customerListType = new TypeToken<List<CustomerDTO>>() {}.getType();
         Type timeSheetListType = new TypeToken<List<TimeSheetEntryDTO>>() {}.getType();
 
         ExportDataDTO export = new ExportDataDTO();
 
+        export.setHolidays(getModelMapper().map(holidayRepository.findAll(), holidayListType));
         export.setCustomers(getModelMapper().map(customerRepository.findAll(), customerListType));
         export.setEntries(getModelMapper().map(timeSheetEntryRepository.findAll(), timeSheetListType));
 
@@ -110,6 +112,7 @@ public class ImportExportService {
      * removes all data, does not reset id generators
      */
     private void removeData() {
+        holidayRepository.deleteAllInBatch();
         timeSheetEntryRepository.deleteAllInBatch();
         projectRepository.deleteAllInBatch();
         customerRepository.deleteAllInBatch();
@@ -117,6 +120,7 @@ public class ImportExportService {
 
     private void recreateData(ExportDataDTO data) {
 
+        Type holidayListType = new TypeToken<List<Holiday>>() {}.getType();
         Type customerListType = new TypeToken<List<Customer>>() {}.getType();
         Type entryListType = new TypeToken<List<TimeSheetEntry>>() {}.getType();
 
@@ -132,8 +136,10 @@ public class ImportExportService {
         customerRepository.saveAll(customerCollection);
 
         Collection<TimeSheetEntry> timeSheetEntryCollection = getModelMapper().map(data.getEntries(), entryListType);
-
         timeSheetEntryRepository.saveAll(timeSheetEntryCollection);
+
+        Collection<Holiday> holidayCollection = getModelMapper().map(data.getHolidays(), holidayListType);
+        holidayRepository.saveAll(holidayCollection);
     }
 
     public String exportHolidayData() throws JsonProcessingException {

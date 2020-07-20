@@ -7,7 +7,8 @@ import java.util.Collection;
 @Data
 public class ExportDataDTO {
 
-    // TODO: Modify to stream?
+    private Collection<HolidayDTO> holidays;
+
     private Collection<CustomerDTO> customers;
 
     private Collection<TimeSheetEntryDTO> entries;
