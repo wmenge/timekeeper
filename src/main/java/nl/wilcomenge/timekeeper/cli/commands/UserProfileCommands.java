@@ -2,7 +2,6 @@ package nl.wilcomenge.timekeeper.cli.commands;
 
 import nl.wilcomenge.timekeeper.cli.model.UserProfile;
 import nl.wilcomenge.timekeeper.cli.service.UserProfileService;
-import nl.wilcomenge.timekeeper.cli.ui.formatter.DurationFormatter;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import org.jline.utils.AttributedString;
 import org.springframework.lang.NonNull;
@@ -10,6 +9,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 @ShellComponent
 public class UserProfileCommands {
@@ -17,24 +17,24 @@ public class UserProfileCommands {
     @Resource
     private UserProfileService userProfileService;
 
-    @ShellMethod("Set working hours")
-    public AttributedString setWorkingHours(@NonNull String workingHours) {
+    @ShellMethod("Set fulltime percentage")
+    public AttributedString setFulltimePercentage(@NonNull String fullTimePercentageString) {
         UserProfile profile = userProfileService.getProfile();
-        profile.setWorkingHours(DurationFormatter.getInstance().parse(workingHours));
+        profile.setFulltimeFactor(BigDecimal.valueOf(Double.parseDouble(fullTimePercentageString) / 100));
         userProfileService.save(profile);
-        return showWorkingHours();
+        return showFulltimePercentage();
     }
 
-    @ShellMethod("Show working hours")
-    public AttributedString showWorkingHours() {
+    @ShellMethod("Show fulltime percentage")
+    public AttributedString showFulltimePercentage() {
         UserProfile profile = userProfileService.getProfile();
-        if (profile.getWorkingHours() == null) {
-            return ResultView.build(ResultView.MessageType.WARNING, "Working hours not set").render();
+        if (profile.getFulltimeFactor() == null) {
+            return ResultView.build(ResultView.MessageType.WARNING, "Fulltime percentage not set").render();
         } else {
             return ResultView.build(
                     ResultView.MessageType.INFO,
-                    String.format("Working hours set to %s", DurationFormatter.getInstance().format(profile.getWorkingHours()))).render();
+                    String.format("Fulltime percentage set to %.2f %%", profile.getFulltimeFactor().doubleValue()
+                            * 100)).render();
         }
     }
-
 }

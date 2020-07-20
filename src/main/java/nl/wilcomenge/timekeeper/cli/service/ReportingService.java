@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ public class ReportingService {
 
     @Resource
     TimeSheetEntryRepository timeSheetEntryRepository;
+
+    @Resource
+    UserProfileService userProfileService;
 
     public List<TimesheetEntryAggregrate> getWeekReport(ReportingPeriod period) {
         List<TimesheetEntryPeriodTotal> totalsPerProject = timeSheetEntryRepository.totalsPerProjectByWeekday(period.getFirstDate(), period.getLastDate(), DEFAULT_SORT);
@@ -85,10 +89,13 @@ public class ReportingService {
     }
 
     public Duration getWorkingDurationForPeriod(ReportingPeriod period) {
+
+        BigDecimal fulltimeFactor = userProfileService.getProfile().getFulltimeFactor();
+
         return period.getFirstDate()
                 .datesUntil(period.getLastDate().plusDays(1)) // datesUntil is exclusive
                 .filter(d -> !WEEKEND.contains(d.getDayOfWeek()))
-                .map(d -> Duration.ofHours(8))
+                .map(d -> Duration.ofMinutes((long)(8 * 60 * fulltimeFactor.doubleValue())))
                 .reduce(Duration.ZERO, (subtotal, element) -> subtotal.plus(element));
     }
 

@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.Duration;
+import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -22,6 +22,6 @@ public class UserProfile {
     private Long id;
 
     @NonNull
-    private Duration workingHours;
+    private BigDecimal fulltimeFactor;
 
 }

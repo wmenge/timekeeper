@@ -8,11 +8,14 @@ import nl.wilcomenge.timekeeper.cli.dto.reporting.period.ReportingPeriod;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.period.WeekReportingPeriod;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.period.YearReportingPeriod;
 import nl.wilcomenge.timekeeper.cli.service.ReportingService;
+import nl.wilcomenge.timekeeper.cli.service.UserProfileService;
 import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import org.jline.utils.AttributedString;
+import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellMethodAvailability;
 import org.springframework.shell.standard.ShellOption;
 
 import javax.annotation.Resource;
@@ -28,6 +31,9 @@ public class ReportCommands {
 
     @Resource
     ReportingService reportingService;
+
+    @Resource
+    UserProfileService userProfileService;
 
     @ShellMethod("Weekly report")
     public AttributedString reportWeekly(@ShellOption(defaultValue = "0") int week, @ShellOption(defaultValue = "0") int year) {
@@ -71,6 +77,7 @@ public class ReportCommands {
     }
 
     @ShellMethod("Utilization weekly YTD")
+    @ShellMethodAvailability("utilizationAvailabilityCheck")
     public AttributedString reportUtilizationWeekly(@ShellOption(defaultValue = "0") int year) {
         ReportingPeriod yearPeriod = getYear(year);
 
@@ -79,6 +86,7 @@ public class ReportCommands {
     }
 
     @ShellMethod("Utilization monthly YTD")
+    @ShellMethodAvailability("utilizationAvailabilityCheck")
     public AttributedString reportUtilizationMonthly(@ShellOption(defaultValue = "0") int year) {
         ReportingPeriod yearPeriod = getYear(year);
 
@@ -91,5 +99,9 @@ public class ReportCommands {
         return new YearReportingPeriod(year);
     }
 
-
+    public Availability utilizationAvailabilityCheck() {
+        return userProfileService.getProfile().getFulltimeFactor() != null
+                ? Availability.available()
+                : Availability.unavailable("no fulltime percentage has been set");
+    }
 }
