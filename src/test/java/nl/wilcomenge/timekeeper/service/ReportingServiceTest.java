@@ -3,6 +3,8 @@ package nl.wilcomenge.timekeeper.service;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.period.MonthReportingPeriod;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.period.ReportingPeriod;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.period.WeekReportingPeriod;
+import nl.wilcomenge.timekeeper.cli.model.Holiday;
+import nl.wilcomenge.timekeeper.cli.model.HolidayRepository;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
 import nl.wilcomenge.timekeeper.cli.model.UserProfile;
 import nl.wilcomenge.timekeeper.cli.service.ReportingService;
@@ -19,6 +21,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -43,11 +47,15 @@ public class ReportingServiceTest {
     @MockBean
     UserProfileService userProfileService;
 
+    @MockBean
+    HolidayRepository holidayRepository;
+
     @BeforeEach
     public void setUp() {
         UserProfile userProfile = new UserProfile();
         userProfile.setFulltimeFactor(BigDecimal.ONE);
         Mockito.when(userProfileService.getProfile()).thenReturn(userProfile);
+        Mockito.when(holidayRepository.findAll()).thenReturn(Collections.emptyList());
     }
 
     @Test
@@ -71,6 +79,18 @@ public class ReportingServiceTest {
 
         ReportingPeriod period = new WeekReportingPeriod(25, 2020);
         assertEquals(Duration.ofHours(36), reportingService.getWorkingDurationForPeriod(period));
+    }
+    
+    @Test
+    public void testGetWorkingDurationForWeekWithHoliday() {
+        // setup a holiday
+        Holiday holiday = new Holiday();
+        holiday.setDate(LocalDate.of(2020, 1, 1));
+        holiday.setName("Some holiday");
+        Mockito.when(holidayRepository.findAll()).thenReturn(Collections.singletonList(holiday));
+
+        ReportingPeriod period = new WeekReportingPeriod(1, 2020);
+        assertEquals(Duration.ofHours(32), reportingService.getWorkingDurationForPeriod(period));
     }
 
 }

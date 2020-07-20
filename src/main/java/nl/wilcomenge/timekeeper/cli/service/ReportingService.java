@@ -5,6 +5,7 @@ import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryAggregrateTotal;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryPeriodTotal;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.UtilizationReportEntry;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.period.ReportingPeriod;
+import nl.wilcomenge.timekeeper.cli.model.HolidayRepository;
 import nl.wilcomenge.timekeeper.cli.model.TimeSheetEntryRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,12 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportingService {
@@ -29,6 +32,9 @@ public class ReportingService {
 
     @Resource
     UserProfileService userProfileService;
+
+    @Resource
+    HolidayRepository holidayRepository;
 
     public List<TimesheetEntryAggregrate> getWeekReport(ReportingPeriod period) {
         List<TimesheetEntryPeriodTotal> totalsPerProject = timeSheetEntryRepository.totalsPerProjectByWeekday(period.getFirstDate(), period.getLastDate(), DEFAULT_SORT);
@@ -91,9 +97,11 @@ public class ReportingService {
     public Duration getWorkingDurationForPeriod(ReportingPeriod period) {
 
         BigDecimal fulltimeFactor = userProfileService.getProfile().getFulltimeFactor();
+        Collection<LocalDate> holidays = holidayRepository.findAll().stream().map(h -> h.getDate()).collect(Collectors.toList());
 
         return period.getFirstDate()
                 .datesUntil(period.getLastDate().plusDays(1)) // datesUntil is exclusive
+                .filter(d -> !holidays.contains(d))
                 .filter(d -> !WEEKEND.contains(d.getDayOfWeek()))
                 .map(d -> Duration.ofMinutes((long)(8 * 60 * fulltimeFactor.doubleValue())))
                 .reduce(Duration.ZERO, (subtotal, element) -> subtotal.plus(element));
