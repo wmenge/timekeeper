@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Collection;
 
 @Data
-public class ExportData {
+public class ExportDataDTO {
 
     // TODO: Modify to stream?
     private Collection<CustomerDTO> customers;

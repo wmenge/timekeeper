@@ -68,7 +68,7 @@ public class ReportingServiceTest {
         UserProfile userProfile = new UserProfile();
         userProfile.setFulltimeFactor(BigDecimal.valueOf(0.9));
         Mockito.when(userProfileService.getProfile()).thenReturn(userProfile);
-        
+
         ReportingPeriod period = new WeekReportingPeriod(25, 2020);
         assertEquals(Duration.ofHours(36), reportingService.getWorkingDurationForPeriod(period));
     }

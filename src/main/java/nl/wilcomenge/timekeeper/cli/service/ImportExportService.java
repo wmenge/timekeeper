@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import nl.wilcomenge.timekeeper.cli.dto.export.CustomerDTO;
-import nl.wilcomenge.timekeeper.cli.dto.export.ExportData;
+import nl.wilcomenge.timekeeper.cli.dto.export.ExportDataDTO;
+import nl.wilcomenge.timekeeper.cli.dto.export.HolidayDTO;
 import nl.wilcomenge.timekeeper.cli.dto.export.TimeSheetEntryDTO;
 import nl.wilcomenge.timekeeper.cli.model.*;
 import org.modelmapper.Converter;
@@ -33,6 +34,9 @@ public class ImportExportService {
 
     @Resource
     private TimeSheetEntryRepository timeSheetEntryRepository;
+
+    @Resource
+    private HolidayRepository holidayRepository;
 
     // TODO setup with spring?
     private ObjectMapper serializeMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
@@ -69,15 +73,22 @@ public class ImportExportService {
         }
     };
 
+    private Converter<String, LocalDate> localDateConverter = new Converter<>() {
+        @Override
+        public LocalDate convert(MappingContext<String, LocalDate> context) {
+            return LocalDate.parse(context.getSource());
+        }
+    };
+
     public String exportData() throws JsonProcessingException {
         return getSerializeMapper().writeValueAsString(getExportData());
     }
 
-    private ExportData getExportData() {
+    private ExportDataDTO getExportData() {
         Type customerListType = new TypeToken<List<CustomerDTO>>() {}.getType();
         Type timeSheetListType = new TypeToken<List<TimeSheetEntryDTO>>() {}.getType();
 
-        ExportData export = new ExportData();
+        ExportDataDTO export = new ExportDataDTO();
 
         export.setCustomers(getModelMapper().map(customerRepository.findAll(), customerListType));
         export.setEntries(getModelMapper().map(timeSheetEntryRepository.findAll(), timeSheetListType));
@@ -85,12 +96,11 @@ public class ImportExportService {
         return export;
     }
 
-    // TODO: Rollback transaction in case of errors during import
     @Transactional
     public void importData(String importContent) throws JsonProcessingException {
         // TODO: read stream instead of string
         // TODO: Validate that export structure contains (valid) data
-        ExportData export = getSerializeMapper().readValue(importContent, ExportData.class);
+        ExportDataDTO export = getSerializeMapper().readValue(importContent, ExportDataDTO.class);
 
         removeData();
         recreateData(export);
@@ -105,7 +115,7 @@ public class ImportExportService {
         customerRepository.deleteAllInBatch();
     }
 
-    private void recreateData(ExportData data) {
+    private void recreateData(ExportDataDTO data) {
 
         Type customerListType = new TypeToken<List<Customer>>() {}.getType();
         Type entryListType = new TypeToken<List<TimeSheetEntry>>() {}.getType();
@@ -126,6 +136,26 @@ public class ImportExportService {
         timeSheetEntryRepository.saveAll(timeSheetEntryCollection);
     }
 
+    public String exportHolidayData() throws JsonProcessingException {
+        Type holidayListType = new TypeToken<List<HolidayDTO>>() {}.getType();
+        return getSerializeMapper().writeValueAsString(getModelMapper().map(holidayRepository.findAll(),holidayListType));
+    }
+
+    @Transactional
+    public void importHolidayData(String importContent) throws JsonProcessingException {
+        // TODO: read stream instead of string
+        // TODO: Validate that export structure contains (valid) data
+        Type holidayListType = new TypeToken<List<HolidayDTO>>() {}.getType();
+        List<HolidayDTO> export = getSerializeMapper().readValue(importContent, List.class);
+        recreateHolidayData(export);
+    }
+
+    private void recreateHolidayData(List<HolidayDTO> data) {
+        Type holidayListType = new TypeToken<List<Holiday>>() {}.getType();
+        Collection<Holiday> holidayCollection = getModelMapper().map(data, holidayListType);
+        holidayRepository.saveAll(holidayCollection);
+    }
+
     private ObjectMapper getSerializeMapper() {
         return serializeMapper;
     }
@@ -135,6 +165,7 @@ public class ImportExportService {
             modelMapper = new ModelMapper();
             modelMapper.addConverter(customerConverter);
             modelMapper.addConverter(entryDTOConverter);
+            modelMapper.addConverter(localDateConverter);
         }
         return modelMapper;
     }

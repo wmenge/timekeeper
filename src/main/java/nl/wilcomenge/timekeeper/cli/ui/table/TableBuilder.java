@@ -47,6 +47,13 @@ public class TableBuilder<T> {
         return headers;
     }
 
+    public static LinkedHashMap<String, Object> getHolidayHeaders() {
+        LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
+        headers.put("date", "Date");
+        headers.put("name", "Name");
+        return headers;
+    }
+
     public static LinkedHashMap<String, Object> getProjectHeaders() {
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
         headers.put("id", "Id");

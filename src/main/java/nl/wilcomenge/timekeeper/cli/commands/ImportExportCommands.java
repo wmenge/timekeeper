@@ -16,7 +16,7 @@ import java.nio.file.Path;
 public class ImportExportCommands {
 
     @Resource
-    ImportExportService importExportService;
+    private ImportExportService importExportService;
 
     @ShellMethod(value = "Export data", key = "export")
     @Transactional
@@ -29,22 +29,15 @@ public class ImportExportCommands {
         byte[] strToBytes = result.getBytes();
 
         Files.write(path, strToBytes);
-
         return "Ok";
     }
 
     @ShellMethod(value = "Import data", key = "import")
     @Transactional
     public String importData(File file, @ShellOption(defaultValue = "false")Boolean confirm) throws IOException {
-
-        if (!confirm) {
-            return "Please confirm import";
-        }
-
+        if (!confirm) return "Please confirm import";
         String contents = Files.readString(file.toPath());
-
         importExportService.importData(contents);
-
         return "Ok";
     }
 
