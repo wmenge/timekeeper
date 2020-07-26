@@ -20,6 +20,9 @@ Installation
 $ mvn clean package
 ```
 
+Copy `src/resources/application.properties.default` to `src/resources/application.properties`
+and modify any settings as needed.
+
 Usage
 -----
 
@@ -159,11 +162,18 @@ Weekly Report of week 28-2020
 2020-07-06 -> My test customer -> My First Project $
 ```
 
+There are more reports available, use the `help` command to discover them.
+
 ### Exporting/importing data
-You can backup your data to a yaml file:
+You can backup your data to a yaml or json file:
 ```
 $ export <path>/export.yaml
 ```
+or:
+```
+$ export <path>/export.json
+```
+
 The resulting file contains all your registered data in nice, human 
 readable/editable format.
 
@@ -171,6 +181,10 @@ The same file can be imported again. Caution: During an import, all existing
 data will be deleted!
 ```
 $ import <path>/export.yaml --confirm
+```
+or:
+```
+$ import <path>/export.json --confirm
 ```
 
 
