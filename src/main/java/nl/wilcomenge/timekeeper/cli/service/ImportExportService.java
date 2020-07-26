@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
-import nl.wilcomenge.timekeeper.cli.dto.export.CustomerDTO;
-import nl.wilcomenge.timekeeper.cli.dto.export.ExportDataDTO;
-import nl.wilcomenge.timekeeper.cli.dto.export.HolidayDTO;
-import nl.wilcomenge.timekeeper.cli.dto.export.TimeSheetEntryDTO;
+import nl.wilcomenge.timekeeper.cli.dto.export.*;
 import nl.wilcomenge.timekeeper.cli.model.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -25,6 +22,9 @@ import java.util.List;
 
 @Service
 public class ImportExportService {
+
+    @Resource
+    private UserProfileService userProfileService;
 
     @Resource
     private CustomerRepository customerRepository;
@@ -91,6 +91,7 @@ public class ImportExportService {
 
         ExportDataDTO export = new ExportDataDTO();
 
+        export.setUserProfile(getModelMapper().map(userProfileService.getProfile(), UserProfileDTO.class));
         export.setHolidays(getModelMapper().map(holidayRepository.findAll(), holidayListType));
         export.setCustomers(getModelMapper().map(customerRepository.findAll(), customerListType));
         export.setEntries(getModelMapper().map(timeSheetEntryRepository.findAll(), timeSheetListType));
@@ -123,6 +124,10 @@ public class ImportExportService {
         Type holidayListType = new TypeToken<List<Holiday>>() {}.getType();
         Type customerListType = new TypeToken<List<Customer>>() {}.getType();
         Type entryListType = new TypeToken<List<TimeSheetEntry>>() {}.getType();
+
+        UserProfile userProfile = userProfileService.getProfile();
+        getModelMapper().map(data.getUserProfile(), userProfile);
+        userProfileService.save(userProfile);
 
         Collection<Customer> customerCollection = getModelMapper().map(data.getCustomers(), customerListType);
 

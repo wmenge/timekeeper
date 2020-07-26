@@ -7,6 +7,8 @@ import java.util.Collection;
 @Data
 public class ExportDataDTO {
 
+    private UserProfileDTO userProfile;
+
     private Collection<HolidayDTO> holidays;
 
     private Collection<CustomerDTO> customers;
