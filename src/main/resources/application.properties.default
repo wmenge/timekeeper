@@ -1,17 +1,20 @@
-spring.datasource.url=jdbc:h2:file:~/yourdatabasefiledb2
+spring.datasource.url=jdbc:h2:file:~/timekeeper-database
 spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=your_user
-spring.datasource.password=your_password
+spring.datasource.username=sa
+spring.datasource.password=password
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-spring.h2.console.enabled=true
 spring.jpa.hibernate.ddl-auto=update
 
-# enable to log db queries
+# h2 console at http://localhost:8080/h2-console
+# spring.h2.console.path=/h2-console
+# spring.h2.console.enabled=true
+
+# log db queries
 #spring.jpa.show-sql=true
 #spring.jpa.properties.hibernate.format_sql=true
 #logging.level.org.hibernate.SQL=DEBUG
 #logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
 
-# disable to show spring boot logging
-spring.main.banner-mode=off
-logging.pattern.console=
+# prevents spring boot logging
+#spring.main.banner-mode=off
+#logging.pattern.console=

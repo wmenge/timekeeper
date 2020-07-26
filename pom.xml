@@ -20,6 +20,12 @@
 
 	<dependencies>
 
+		<!-- Only needed if you want to access a web console to the h2 db at: http://localhost:8080/h2-console/ -->
+		<!--<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>-->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
