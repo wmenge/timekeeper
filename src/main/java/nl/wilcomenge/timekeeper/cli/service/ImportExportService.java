@@ -1,11 +1,14 @@
 package nl.wilcomenge.timekeeper.cli.service;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import nl.wilcomenge.timekeeper.cli.dto.export.*;
 import nl.wilcomenge.timekeeper.cli.model.*;
+import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -22,6 +26,11 @@ import java.util.List;
 
 @Service
 public class ImportExportService {
+
+    public enum Format {
+        JSON,
+        YAML
+    }
 
     @Resource
     private UserProfileService userProfileService;
@@ -37,9 +46,6 @@ public class ImportExportService {
 
     @Resource
     private HolidayRepository holidayRepository;
-
-    // TODO setup with spring?
-    private ObjectMapper serializeMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
 
     private ModelMapper modelMapper = null;
 
@@ -80,8 +86,12 @@ public class ImportExportService {
         }
     };
 
-    public String exportData() throws JsonProcessingException {
-        return getSerializeMapper().writeValueAsString(getExportData());
+    public Format getFormat(File file) {
+        return Format.valueOf(FilenameUtils.getExtension(file.getName()).toUpperCase());
+    }
+
+    public String exportData(Format format) throws JsonProcessingException {
+        return getSerializeMapper(format).writeValueAsString(getExportData());
     }
 
     private ExportDataDTO getExportData() {
@@ -100,10 +110,10 @@ public class ImportExportService {
     }
 
     @Transactional
-    public void importData(String importContent) throws JsonProcessingException {
+    public void importData(String importContent, Format format) throws JsonProcessingException {
         // TODO: read stream instead of string
         // TODO: Validate that export structure contains (valid) data
-        ExportDataDTO export = getSerializeMapper().readValue(importContent, ExportDataDTO.class);
+        ExportDataDTO export = getSerializeMapper(format).readValue(importContent, ExportDataDTO.class);
 
         removeData();
         recreateData(export);
@@ -147,17 +157,17 @@ public class ImportExportService {
         holidayRepository.saveAll(holidayCollection);
     }
 
-    public String exportHolidayData() throws JsonProcessingException {
+    public String exportHolidayData(Format format) throws JsonProcessingException {
         Type holidayListType = new TypeToken<List<HolidayDTO>>() {}.getType();
-        return getSerializeMapper().writeValueAsString(getModelMapper().map(holidayRepository.findAll(),holidayListType));
+        return getSerializeMapper(format).writeValueAsString(getModelMapper().map(holidayRepository.findAll(),holidayListType));
     }
 
     @Transactional
-    public void importHolidayData(String importContent) throws JsonProcessingException {
+    public void importHolidayData(String importContent, Format format) throws JsonProcessingException {
         // TODO: read stream instead of string
         // TODO: Validate that export structure contains (valid) data
         Type holidayListType = new TypeToken<List<HolidayDTO>>() {}.getType();
-        List<HolidayDTO> export = getSerializeMapper().readValue(importContent, List.class);
+        List<HolidayDTO> export = getSerializeMapper(format).readValue(importContent, List.class);
         recreateHolidayData(export);
     }
 
@@ -167,8 +177,15 @@ public class ImportExportService {
         holidayRepository.saveAll(holidayCollection);
     }
 
-    private ObjectMapper getSerializeMapper() {
-        return serializeMapper;
+    private ObjectMapper getSerializeMapper(Format format) {
+        switch (format) {
+            case JSON:
+                return new ObjectMapper(new JsonFactory()).enable(SerializationFeature.INDENT_OUTPUT);
+            case YAML:
+                return new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+        }
+
+        return null;
     }
 
     private ModelMapper getModelMapper() {

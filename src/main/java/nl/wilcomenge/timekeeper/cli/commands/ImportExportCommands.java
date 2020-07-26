@@ -18,10 +18,10 @@ public class ImportExportCommands {
     @Resource
     private ImportExportService importExportService;
 
-    @ShellMethod(value = "Export data", key = "export")
+    @ShellMethod(value = "Export data as yaml or json file", key = "export")
     @Transactional
     public String exportData(File file) throws IOException {
-        String result = importExportService.exportData();
+        String result = importExportService.exportData(importExportService.getFormat(file));
 
         // TODO: Error if exists
         file.createNewFile();
@@ -32,12 +32,12 @@ public class ImportExportCommands {
         return "Ok";
     }
 
-    @ShellMethod(value = "Import data", key = "import")
+    @ShellMethod(value = "Import data as yaml or json file", key = "import")
     @Transactional
     public String importData(File file, @ShellOption(defaultValue = "false")Boolean confirm) throws IOException {
         if (!confirm) return "Please confirm import";
         String contents = Files.readString(file.toPath());
-        importExportService.importData(contents);
+        importExportService.importData(contents, importExportService.getFormat(file));
         return "Ok";
     }
 

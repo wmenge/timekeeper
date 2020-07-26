@@ -66,9 +66,9 @@ public class HolidayCommands {
         return ResultView.build(ResultView.MessageType.INFO, "Showing holidays:", holidayList).render(TableBuilder.getHolidayHeaders());
     }
 
-    @ShellMethod("Export holidays.")
+    @ShellMethod("Export holidays as yaml or json file.")
     public String exportHolidays(File file) throws IOException {
-        String result = importExportService.exportHolidayData();
+        String result = importExportService.exportHolidayData(importExportService.getFormat(file));
 
         // TODO: Error if exists
         file.createNewFile();
@@ -80,11 +80,11 @@ public class HolidayCommands {
         return "Ok";
     }
 
-    @ShellMethod("Import holidays.")
+    @ShellMethod("Import holidays as yaml or json file.")
     public String importHolidays(File file, @ShellOption(defaultValue = "false")Boolean confirm) throws IOException {
         if (!confirm) return "Please confirm import";
         String contents = Files.readString(file.toPath());
-        importExportService.importHolidayData(contents);
+        importExportService.importHolidayData(contents, importExportService.getFormat(file));
         return "Ok";
     }
 
