@@ -118,6 +118,9 @@ public class TableBuilder<T> {
         headers.put("nonBillableHours", "Non-Billable Hours");
         headers.put("workingHours", "Working Hours");
         headers.put("utilizationPercentageString", "Utilization");
+
+        // TODO: Only show column when revenue is available
+        headers.put("revenueString", "Revenue");
         return headers;
     }
 
