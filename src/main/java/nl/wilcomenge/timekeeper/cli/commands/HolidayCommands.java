@@ -1,10 +1,9 @@
 package nl.wilcomenge.timekeeper.cli.commands;
 
-import nl.wilcomenge.timekeeper.cli.application.State;
 import nl.wilcomenge.timekeeper.cli.model.Holiday;
 import nl.wilcomenge.timekeeper.cli.model.HolidayRepository;
 import nl.wilcomenge.timekeeper.cli.service.ImportExportService;
-import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
+import nl.wilcomenge.timekeeper.cli.ui.table.headers.impl.HolidayHeaderProvider;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import org.jline.utils.AttributedString;
 import org.springframework.data.domain.Sort;
@@ -31,8 +30,10 @@ public class HolidayCommands {
     @Resource
     private ImportExportService importExportService;
 
+    //@Resource
+    //private State state;
     @Resource
-    private State state;
+    private HolidayHeaderProvider headerProvider;
 
     @ShellMethod("Add a holiday.")
     public AttributedString addHoliday(@NonNull LocalDate date, @NonNull String name) {
@@ -40,7 +41,7 @@ public class HolidayCommands {
         holiday.setDate(date);
         holiday.setName(name);
         holidayRepository.save(holiday);
-        return ResultView.build(ResultView.MessageType.INFO, "Created holiday", holiday).render(TableBuilder.getHolidayHeaders());
+        return ResultView.build(ResultView.MessageType.INFO, "Created holiday", holiday).render(headerProvider);
     }
 
     @ShellMethod("Change a holiday name.")
@@ -48,7 +49,7 @@ public class HolidayCommands {
         Holiday holiday = holidayRepository.findById(date).get();
         holiday.setName(name);
         holidayRepository.save(holiday);
-        return ResultView.build(ResultView.MessageType.INFO, "Changed holiday name", holiday).render(TableBuilder.getHolidayHeaders());
+        return ResultView.build(ResultView.MessageType.INFO, "Changed holiday name", holiday).render(headerProvider);
     }
 
     @ShellMethod("Remove a holiday.")
@@ -57,13 +58,13 @@ public class HolidayCommands {
         Holiday holiday = holidayRepository.findById(date).get();
         holidayRepository.delete(holiday);
         List<Holiday> holidayList = holidayRepository.findAll(Sort.by(Sort.Direction.ASC, "date"));
-        return ResultView.build(ResultView.MessageType.INFO, "Removed holiday", holidayList).render(TableBuilder.getHolidayHeaders());
+        return ResultView.build(ResultView.MessageType.INFO, "Removed holiday", holidayList).render(headerProvider);
     }
 
     @ShellMethod("List holidays.")
     public AttributedString listHolidays() {
         List<Holiday> holidayList = holidayRepository.findAll(Sort.by(Sort.Direction.ASC, "date"));
-        return ResultView.build(ResultView.MessageType.INFO, "Showing holidays:", holidayList).render(TableBuilder.getHolidayHeaders());
+        return ResultView.build(ResultView.MessageType.INFO, "Showing holidays:", holidayList).render(headerProvider);
     }
 
     @ShellMethod("Export holidays as yaml or json file.")

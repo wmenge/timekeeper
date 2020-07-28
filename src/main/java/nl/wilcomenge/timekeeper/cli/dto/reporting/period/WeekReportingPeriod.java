@@ -38,6 +38,14 @@ public class WeekReportingPeriod implements ReportingPeriod {
                 .with(weekFields.dayOfWeek(), 7);
     }
 
+    public int getWeek() {
+        return week;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,5 +1,6 @@
 package nl.wilcomenge.timekeeper.cli.ui.view;
 
+import nl.wilcomenge.timekeeper.cli.ui.table.headers.HeaderProvider;
 import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
@@ -53,13 +54,13 @@ public class ResultView<T> {
     }
 
     // TODO try to remove the class parameter
-    public AttributedString render(LinkedHashMap<String, Object> headers) {
+    public AttributedString render(HeaderProvider headerProvider) {
         if (list == null && entry == null) {
             return renderMessage();
         } else if(list != null) {
-            return AttributedString.join( new AttributedString("\n"), Arrays.asList(renderMessage(), renderTable(headers)));
+            return AttributedString.join( new AttributedString("\n"), Arrays.asList(renderMessage(), renderTable(headerProvider.getHeaders())));
         } else {
-            return AttributedString.join( new AttributedString("\n"), Arrays.asList(renderMessage(), renderRecord(headers)));
+            return AttributedString.join( new AttributedString("\n"), Arrays.asList(renderMessage(), renderRecord(headerProvider.getHeaders())));
         }
     }
 

@@ -3,7 +3,7 @@ package nl.wilcomenge.timekeeper.cli.commands;
 import nl.wilcomenge.timekeeper.cli.application.State;
 import nl.wilcomenge.timekeeper.cli.model.Project;
 import nl.wilcomenge.timekeeper.cli.model.ProjectRepository;
-import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
+import nl.wilcomenge.timekeeper.cli.ui.table.headers.impl.ProjectHeaderProvider;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView.MessageType;
 import org.jline.utils.AttributedString;
@@ -27,6 +27,9 @@ public class ProjectCommands {
     @Resource
     private State state;
 
+    @Resource
+    private ProjectHeaderProvider headerProvider;
+
     @ShellMethod("Add a project.")
     public AttributedString addProject(@NonNull String name, @ShellOption(defaultValue="false") Boolean notBillable) {
         Project project = new Project();
@@ -35,7 +38,7 @@ public class ProjectCommands {
         project.setBillable(!notBillable);
         projectRepository.save(project);
         state.setSelectedProject(project);
-        return ResultView.build(MessageType.INFO, "Created project", project).render(TableBuilder.getProjectHeaders());
+        return ResultView.build(MessageType.INFO, "Created project", project).render(headerProvider);
     }
 
     public Availability addProjectAvailability() {
@@ -55,7 +58,7 @@ public class ProjectCommands {
         if (notBillable) project.setBillable(false);
 
         projectRepository.save(project);
-        return ResultView.build(MessageType.INFO, "Changed project name", project).render(TableBuilder.getProjectHeaders());
+        return ResultView.build(MessageType.INFO, "Changed project name", project).render(headerProvider);
     }
 
     @ShellMethod("Select a project.")
@@ -77,7 +80,7 @@ public class ProjectCommands {
         List<Project> projectList = (state.getOptionalCustomer().isEmpty()) ?
                 projectRepository.findAll(Sort.by(Sort.Direction.ASC, "customer.id")) : projectRepository.findByCustomer(state.getOptionalCustomer().get());
 
-        return ResultView.build(MessageType.INFO, "Removed project", projectList).render(TableBuilder.getProjectHeaders());
+        return ResultView.build(MessageType.INFO, "Removed project", projectList).render(headerProvider);
     }
 
     @ShellMethod("List projects.")
@@ -86,7 +89,7 @@ public class ProjectCommands {
         List<Project> projectList = (showAll || state.getOptionalCustomer().isEmpty()) ?
             projectRepository.findAll(Sort.by(Sort.Direction.ASC, "customer.id")) : projectRepository.findByCustomer(state.getOptionalCustomer().get());
 
-        return ResultView.build(MessageType.INFO, "Showing project:", projectList).render(TableBuilder.getProjectHeaders());
+        return ResultView.build(MessageType.INFO, "Showing project:", projectList).render(headerProvider);
 
     }
 }

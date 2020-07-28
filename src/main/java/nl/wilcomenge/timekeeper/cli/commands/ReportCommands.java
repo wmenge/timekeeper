@@ -9,7 +9,11 @@ import nl.wilcomenge.timekeeper.cli.dto.reporting.period.WeekReportingPeriod;
 import nl.wilcomenge.timekeeper.cli.dto.reporting.period.YearReportingPeriod;
 import nl.wilcomenge.timekeeper.cli.service.ReportingService;
 import nl.wilcomenge.timekeeper.cli.service.UserProfileService;
-import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
+import nl.wilcomenge.timekeeper.cli.ui.table.headers.HeaderProvider;
+import nl.wilcomenge.timekeeper.cli.ui.table.headers.impl.MonthlyReportHeaderProvider;
+import nl.wilcomenge.timekeeper.cli.ui.table.headers.impl.UtilizationReportHeaderProvider;
+import nl.wilcomenge.timekeeper.cli.ui.table.headers.impl.WeeklyReportHeaderProvider;
+import nl.wilcomenge.timekeeper.cli.ui.table.headers.impl.YearlyReportHeaderProvider;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import org.jline.utils.AttributedString;
 import org.springframework.shell.Availability;
@@ -35,11 +39,21 @@ public class ReportCommands {
     @Resource
     UserProfileService userProfileService;
 
+    @Resource
+    WeeklyReportHeaderProvider weeklyReportHeaderProvider;
+
+    @Resource
+    YearlyReportHeaderProvider yearlyReportHeaderProvider;
+
+    @Resource
+    UtilizationReportHeaderProvider utilizationReportHeaderProvider;
+
+
     @ShellMethod("Weekly report")
     public AttributedString reportWeekly(@ShellOption(defaultValue = "0") int week, @ShellOption(defaultValue = "0") int year) {
         ReportingPeriod weekPeriod = getWeek(week, year);
         List<TimesheetEntryAggregrate> report = reportingService.getWeekReport(weekPeriod);
-        return ResultView.build(ResultView.MessageType.INFO, String.format("Weekly Report of week %s", weekPeriod), report).render(TableBuilder.getWeeklyReportHeaders());
+        return ResultView.build(ResultView.MessageType.INFO, String.format("Weekly Report of week %s", weekPeriod), report).render(weeklyReportHeaderProvider);
     }
 
     private ReportingPeriod getWeek(int week, int year) {
@@ -55,8 +69,9 @@ public class ReportCommands {
     @ShellMethod("Monthly report")
     public AttributedString reportMonthly(@ShellOption(defaultValue = "0") int month, @ShellOption(defaultValue = "0") int year) {
         ReportingPeriod monthPeriod = getMonth(month, year);
+        HeaderProvider headerProvider = new MonthlyReportHeaderProvider(monthPeriod);
         List<TimesheetEntryAggregrate> report = reportingService.getMonthReport(monthPeriod);
-        return ResultView.build(ResultView.MessageType.INFO, String.format("Monthly Report of month %s", monthPeriod), report).render(TableBuilder.getMonthlyReportHeaders());
+        return ResultView.build(ResultView.MessageType.INFO, String.format("Monthly Report of month %s", monthPeriod), report).render(headerProvider);
     }
 
     private ReportingPeriod getMonth(int month, int year) {
@@ -73,7 +88,7 @@ public class ReportCommands {
     public AttributedString reportYearly(@ShellOption(defaultValue = "0") int year) {
         ReportingPeriod yearPeriod = getYear(year);
         List<TimesheetEntryAggregrate> report = reportingService.getYearReport(yearPeriod);
-        return ResultView.build(ResultView.MessageType.INFO, String.format("Yearly Report of %s", yearPeriod), report).render(TableBuilder.getYearlyReportHeaders());
+        return ResultView.build(ResultView.MessageType.INFO, String.format("Yearly Report of %s", yearPeriod), report).render(yearlyReportHeaderProvider);
     }
 
     @ShellMethod("Utilization weekly YTD")
@@ -82,7 +97,7 @@ public class ReportCommands {
         ReportingPeriod yearPeriod = getYear(year);
 
         List<UtilizationReportEntry> report = reportingService.getUtilizationReportPerWeek(yearPeriod);
-        return ResultView.build(ResultView.MessageType.INFO, String.format("Weekly Utilization Report of %s", yearPeriod), report).render(TableBuilder.getUtilizationReportHeaders());
+        return ResultView.build(ResultView.MessageType.INFO, String.format("Weekly Utilization Report of %s", yearPeriod), report).render(utilizationReportHeaderProvider);
     }
 
     @ShellMethod("Utilization monthly YTD")
@@ -91,7 +106,7 @@ public class ReportCommands {
         ReportingPeriod yearPeriod = getYear(year);
 
         List<UtilizationReportEntry> report = reportingService.getUtilizationReportPerMonth(yearPeriod);
-        return ResultView.build(ResultView.MessageType.INFO, String.format("Monthly Utilization Report of %s", yearPeriod), report).render(TableBuilder.getUtilizationReportHeaders());
+        return ResultView.build(ResultView.MessageType.INFO, String.format("Monthly Utilization Report of %s", yearPeriod), report).render(utilizationReportHeaderProvider);
     }
 
     private ReportingPeriod getYear(int year) {

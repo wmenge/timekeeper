@@ -3,7 +3,7 @@ package nl.wilcomenge.timekeeper.cli.commands;
 import nl.wilcomenge.timekeeper.cli.application.State;
 import nl.wilcomenge.timekeeper.cli.model.Customer;
 import nl.wilcomenge.timekeeper.cli.model.CustomerRepository;
-import nl.wilcomenge.timekeeper.cli.ui.table.TableBuilder;
+import nl.wilcomenge.timekeeper.cli.ui.table.headers.impl.CustomerHeaderProvider;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView;
 import nl.wilcomenge.timekeeper.cli.ui.view.ResultView.MessageType;
 import org.jline.utils.AttributedString;
@@ -25,13 +25,16 @@ public class CustomerCommands {
     @Resource
     private State state;
 
+    @Resource
+    private CustomerHeaderProvider headerProvider;
+
     @ShellMethod("Add a customer.")
     public AttributedString addCustomer(@NonNull String name) {
         Customer customer = new Customer();
         customer.setName(name);
         customerRepository.save(customer);
         state.setSelectedCustomer(customer);
-        return ResultView.build(MessageType.INFO, "Created customer", customer).render(TableBuilder.getCustomerHeaders());
+        return ResultView.build(MessageType.INFO, "Created customer", customer).render(headerProvider);
     }
 
     @ShellMethod("Change a customers name.")
@@ -39,7 +42,7 @@ public class CustomerCommands {
         Customer customer = customerRepository.findById(id).get();
         customer.setName(name);
         customerRepository.save(customer);
-        return ResultView.build(MessageType.INFO, "Changed customer name", customer).render(TableBuilder.getCustomerHeaders());
+        return ResultView.build(MessageType.INFO, "Changed customer name", customer).render(headerProvider);
     }
 
     @ShellMethod("Remove a customer.")
@@ -53,7 +56,7 @@ public class CustomerCommands {
 
         customerRepository.delete(customer);
         List<Customer> customerList = customerRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
-        return ResultView.build(MessageType.INFO, "Removed customer", customerList).render(TableBuilder.getCustomerHeaders());
+        return ResultView.build(MessageType.INFO, "Removed customer", customerList).render(headerProvider);
     }
 
     @ShellMethod("Select a customer")
@@ -64,7 +67,7 @@ public class CustomerCommands {
     @ShellMethod("List customers.")
     public AttributedString listCustomers() {
         List<Customer> customerList = customerRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
-        return ResultView.build(MessageType.INFO, "Showing customers:", customerList).render(TableBuilder.getCustomerHeaders());
+        return ResultView.build(MessageType.INFO, "Showing customers:", customerList).render(headerProvider);
     }
 
 }

@@ -29,7 +29,7 @@ public class TableBuilder<T> {
         return tableBuilder.build();
     }
 
-    public static LinkedHashMap<String, Object> getTimeSheetEntryHeaders() {
+    /*public static LinkedHashMap<String, Object> getTimeSheetEntryHeaders() {
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
         headers.put("id", "Id");
         headers.put("date", "Date");
@@ -38,32 +38,33 @@ public class TableBuilder<T> {
         headers.put("duration", "Duration");
         headers.put("remark", "Remark");
         return headers;
-    }
+    }*/
 
-    public static LinkedHashMap<String, Object> getCustomerHeaders() {
+    /*public static LinkedHashMap<String, Object> getCustomerHeaders() {
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
         headers.put("id", "Id");
         headers.put("name", "Name");
         return headers;
-    }
+    }*/
 
-    public static LinkedHashMap<String, Object> getHolidayHeaders() {
+    /*public static LinkedHashMap<String, Object> getHolidayHeaders() {
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
         headers.put("date", "Date");
         headers.put("name", "Name");
         return headers;
-    }
+    }*/
 
-    public static LinkedHashMap<String, Object> getProjectHeaders() {
+
+    /*public static LinkedHashMap<String, Object> getProjectHeaders() {
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
         headers.put("id", "Id");
         headers.put("customer.name", "Customer");
         headers.put("name", "Name");
         headers.put("billable", "Billable");
         return headers;
-    }
+    }*/
 
-    public static LinkedHashMap<String, Object> getWeeklyReportHeaders() {
+    /*public static LinkedHashMap<String, Object> getWeeklyReportHeaders() {
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
         headers.put("description1", "Customer");
         headers.put("description2", "Project");
@@ -76,9 +77,9 @@ public class TableBuilder<T> {
         headers.put("durations[7]", "Sun   ");
         headers.put("total", "Total  ");
         return headers;
-    }
+    }*/
 
-    public static LinkedHashMap<String, Object> getMonthlyReportHeaders() {
+    /*public static LinkedHashMap<String, Object> getMonthlyReportHeaders() {
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
         headers.put("description1", "Customer");
         headers.put("description2", "Project");
@@ -110,7 +111,7 @@ public class TableBuilder<T> {
         headers.put("total", "Total  ");
         return headers;
     }
-
+*/
     public static LinkedHashMap<String, Object> getUtilizationReportHeaders() {
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
         headers.put("period", "Period");
