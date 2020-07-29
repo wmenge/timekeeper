@@ -56,7 +56,7 @@ public class TimeSheetCommands {
         if (remark != null && remark.length() > 0) {
             entry.setRemark(remark);
         }
-
+        timeSheetEntryRepository.save(entry);
         return ResultView.build(MessageType.INFO, "Changed entry", entry).render(headerProvider);
     }
 
