@@ -57,9 +57,7 @@ public class TimeSheetCommands {
             entry.setRemark(remark);
         }
 
-        timeSheetEntryRepository.save(entry);
-        List<TimeSheetEntry> entries = timeSheetEntryRepository.findByDate(state.getDate());;
-        return ResultView.build(MessageType.INFO, "Changed entry", entries).render(headerProvider);
+        return ResultView.build(MessageType.INFO, "Changed entry", entry).render(headerProvider);
     }
 
     @ShellMethod("Remove a timesheet entry.")
