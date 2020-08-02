@@ -27,7 +27,7 @@ public class MonthlyReportHeaderProvider implements HeaderProvider {
         headers.put("description2", "Project");
 
         weekNumbers.forEach(week -> {
-            headers.put(String.format("durations[%d]", week.getWeek()), StringUtils.rightPad(String.format("%s", week), 6));
+            headers.put(String.format("durations[%d]", week.getWeek()), StringUtils.rightPad(String.format("%s", week), 7));
         });
 
         headers.put("total", "Total  ");

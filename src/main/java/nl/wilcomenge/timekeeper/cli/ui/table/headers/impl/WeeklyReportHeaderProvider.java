@@ -22,7 +22,7 @@ public class WeeklyReportHeaderProvider implements HeaderProvider {
         int i = 1;
         // TODO: Only provide days that are in the dataset
         for(DayOfWeek day: DayOfWeek.values()) {
-            headers.put(String.format("durations[%d]", i), StringUtils.rightPad(day.getDisplayName(TextStyle.SHORT, LocaleContextHolder.getLocale()), 6));
+            headers.put(String.format("durations[%d]", i), StringUtils.rightPad(day.getDisplayName(TextStyle.SHORT, LocaleContextHolder.getLocale()), 7));
             i++;
         }
 
