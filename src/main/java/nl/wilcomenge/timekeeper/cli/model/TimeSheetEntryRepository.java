@@ -17,6 +17,13 @@ public interface TimeSheetEntryRepository extends JpaRepository<TimeSheetEntry, 
 
     List<TimeSheetEntry> findByDateBetween(LocalDate startDate, LocalDate endDate, Sort sort);
 
+    @Query("SELECT e " +
+            "FROM TimeSheetEntry AS e " +
+            "WHERE e.project IN ( SELECT p FROM Project as p WHERE p.customer = :customer )")
+    List<TimeSheetEntry> findByCustomer(Customer customer, Sort sort);
+
+    List<TimeSheetEntry> findByProject(Project project, Sort sort);
+
     // TODO: Check if sum(duration) can be returned as duration instead of Long
     @Query("SELECT new nl.wilcomenge.timekeeper.cli.dto.reporting.TimesheetEntryPeriodTotal(e.project, EXTRACT(ISO_DAY_OF_WEEK FROM e.date) as period, SUM(e.duration)) " +
             "FROM TimeSheetEntry as e " +
