@@ -109,6 +109,15 @@ public class ReportCommands {
         return ResultView.build(ResultView.MessageType.INFO, String.format("Monthly Utilization Report of %s", yearPeriod), report).render(utilizationReportHeaderProvider);
     }
 
+    @ShellMethod("Utilization YTD")
+    @ShellMethodAvailability("utilizationAvailabilityCheck")
+    public AttributedString reportUtilizationYearly(@ShellOption(defaultValue = "0") int year) {
+        ReportingPeriod yearPeriod = getYear(year);
+
+        List<UtilizationReportEntry> report = reportingService.getUtilizationReportPerYear(yearPeriod);
+        return ResultView.build(ResultView.MessageType.INFO, String.format("Year Utilization Report of %s", yearPeriod), report).render(utilizationReportHeaderProvider);
+    }
+
     private ReportingPeriod getYear(int year) {
         if (year == 0) year = state.getDate().getYear();
         return new YearReportingPeriod(year);

@@ -88,6 +88,12 @@ public class ReportingService {
         return utilizationReportEntries;
     }
 
+    public List<UtilizationReportEntry> getUtilizationReportPerYear(ReportingPeriod period) {
+        List<UtilizationReportEntry> utilizationReportEntries = timeSheetEntryRepository.utilizationPerYear(period.getFirstDate(), period.getLastDate());
+        addWorkingHours(utilizationReportEntries);
+        return utilizationReportEntries;
+    }
+
     private void addWorkingHours(List<UtilizationReportEntry> utilizationReportEntries) {
         utilizationReportEntries.forEach(e -> {
             e.setWorkingHours(getWorkingDurationForPeriod(e.getPeriod()));
